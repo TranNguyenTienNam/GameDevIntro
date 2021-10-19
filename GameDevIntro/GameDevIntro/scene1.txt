@@ -1,0 +1,111 @@
+# id	file_path	transparent_color_r	g	b
+[TEXTURES]
+tex-mario	textures\mario.png	255	255	255
+tex-misc	textures\misc.png	176	224	248
+
+# id	left	top	right	bottom	texture_id
+[SPRITES]
+# MARIO
+# idle
+spr-small-mario-idle-left-0	187	0	12	15	tex-mario
+spr-small-mario-idle-right-0	247	0	12	15	tex-mario
+#walk
+spr-small-mario-walk-left-0	125	0	15	16	tex-mario
+spr-small-mario-walk-right-0	306	0	15	16	tex-mario
+#run
+spr-small-mario-run-left-0	95	0	16	16	tex-mario
+spr-small-mario-run-left-1	155	0	16	16	tex-mario
+spr-small-mario-run-right-0	335	0	16	16	tex-mario
+spr-small-mario-run-right-1	275	0	16	16	tex-mario
+#skid
+spr-small-mario-skid-left-0	6	0	14	16	tex-mario
+spr-small-mario-skid-right-0	426	0	14	16	tex-mario
+# die 
+#10099	215	120	231	135	tex-mario
+#BRICK
+spr-brick-0	300	135	16	16	tex-misc
+spr-brick-1	318	135	16	16	tex-misc
+spr-brick-2	336	135	16	16	tex-misc
+spr-brick-3	354	135	16	16	tex-misc
+spr-brick-4	372	135	16	16	tex-misc
+				
+# ani_id	sprite1_id	time1	sprite2_id	time2	...
+[ANIMATIONS]
+
+# ==== MARIO =========
+#idle left
+ani-small-mario-idle-left	spr-small-mario-idle-left-0	100
+#idle right
+ani-small-mario-idle-right	spr-small-mario-idle-right-0	100
+#walk left 
+ani-small-mario-walk-left	spr-small-mario-walk-left-0	100	spr-small-mario-idle-left-0	100
+#walk right 
+ani-small-mario-walk-right	spr-small-mario-walk-right-0	100	spr-small-mario-idle-right-0	100
+#die
+#599	10099	100
+
+
+# ==== BRICK =========
+ani-brick	spr-brick-0	100
+ani-brick	spr-brick-1	100
+ani-brick	spr-brick-2	100
+ani-brick	spr-brick-3	100
+ani-brick	spr-brick-4	100
+
+[OBJECTS]
+# type	x	y	ani_set_id	extra_settings per object type
+# type: 0 = Mario , 1 = Brick, 2 = Goomba
+# MARIO
+0	50.0	0
+
+# BRICK 
+# --- platform (hint: I created the list using Excel!) ----
+1	0	150
+1	16	150
+1	32	150
+1	48	150
+1	64	150
+1	80	150
+1	96	150
+1	112	150
+1	128	150
+1	144	150
+1	160	150
+1	176	150
+1	192	150
+1	208	150
+1	224	150
+1	240	150
+1	256	150
+1	272	150
+1	288	150
+1	304	150
+1	320	150
+1	336	150
+1	352	150
+1	368	150
+1	384	150
+1	400	150
+1	416	150
+1	432	150
+1	448	150
+
+# ---- brick group 1 ----
+1	100	74
+1	100	90
+1	84	90
+
+# ---- brick group 2 ----
+1	160	74
+1	160	90
+1	144	90
+
+# ---- brick group 3 ----
+1	220	74
+1	220	90
+1	204	90
+
+# --- SCENE PORTAL ----
+# type	l	t	ani_set_id	r	b	scene_id
+#50	300	98	0	316	150	2
+
