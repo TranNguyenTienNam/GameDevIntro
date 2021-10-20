@@ -1,6 +1,0 @@
-﻿  Mario.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\InputHandler.h(8,1): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
-C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h(42): message : see previous definition of 'DIRECTINPUT_VERSION'
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\Mario.cpp(106,41): warning C4305: '=': truncation from 'double' to 'FLOAT'
-  GameDevIntro.vcxproj -> E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\Debug\GameDevIntro.exe
