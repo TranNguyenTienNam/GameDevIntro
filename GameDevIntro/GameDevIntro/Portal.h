@@ -12,7 +12,7 @@ class CPortal : public CGameObject
 	int width;
 	int height;
 public:
-	CPortal(float l, float t, float r, float b, int scene_id);
+	CPortal(float l, float t, float w, float h, int scene_id);
 	void Update(DWORD dt);
 	void Render();
 	void UpdateBoundingBox();

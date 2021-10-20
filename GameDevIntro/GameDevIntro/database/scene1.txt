@@ -7,7 +7,7 @@ tex-misc	textures\misc.png	176	224	248
 [SPRITES]
 # MARIO
 # idle
-spr-small-mario-idle-left-0	187	0	12	15	tex-mario 
+spr-small-mario-idle-left-0	187	0	12	15	tex-mario
 spr-small-mario-idle-right-0	247	0	12	15	tex-mario
 #walk
 spr-small-mario-walk-left-0	125	0	15	16	tex-mario
@@ -19,7 +19,7 @@ spr-small-mario-run-right-0	335	0	16	16	tex-mario
 spr-small-mario-run-right-1	275	0	16	16	tex-mario
 #skid
 spr-small-mario-skid-left-0	6	0	14	16	tex-mario
-spr-small-mario-skid-right-0	426	0	14	16	tex-mario	
+spr-small-mario-skid-right-0	426	0	14	16	tex-mario
 # die 
 #10099	215	120	231	135	tex-mario
 #BRICK
@@ -28,7 +28,7 @@ spr-brick-1	318	135	16	16	tex-misc
 spr-brick-2	336	135	16	16	tex-misc
 spr-brick-3	354	135	16	16	tex-misc
 spr-brick-4	372	135	16	16	tex-misc
-						
+
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
 
@@ -38,21 +38,15 @@ ani-small-mario-idle-left	spr-small-mario-idle-left-0	100
 #idle right
 ani-small-mario-idle-right	spr-small-mario-idle-right-0	100
 #walk left 
-ani-small-mario-walk-left	spr-small-mario-walk-left-0	100
-ani-small-mario-walk-left	spr-small-mario-idle-left-0	100
+ani-small-mario-walk-left	spr-small-mario-walk-left-0	100	spr-small-mario-idle-left-0	100
 #walk right 
-ani-small-mario-walk-right	spr-small-mario-walk-right-0	100
-ani-small-mario-walk-right	spr-small-mario-idle-right-0	100
+ani-small-mario-walk-right	spr-small-mario-walk-right-0	100	spr-small-mario-idle-right-0	100
 #die
 #599	10099	100
 
 
 # ==== BRICK =========
-ani-brick	spr-brick-0	100
-ani-brick	spr-brick-1	100
-ani-brick	spr-brick-2	100
-ani-brick	spr-brick-3	100
-ani-brick	spr-brick-4	100
+ani-brick	spr-brick-0	100	spr-brick-1	100	spr-brick-2	100	spr-brick-3	100	spr-brick-4	100
 
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
@@ -108,6 +102,6 @@ ani-brick	spr-brick-4	100
 1	204	90	22
 
 # --- SCENE PORTAL ----
-# type	l	t	ani_set_id	r	b	scene_id
-50	300	98	0	316	150	2
+# type	x	y	w	h	scene_id
+50	300	98	30	45	2
 

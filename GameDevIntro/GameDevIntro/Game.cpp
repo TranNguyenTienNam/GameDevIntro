@@ -149,7 +149,7 @@ void CGame::GameInit(HWND hWnd)
 	game->GetService<CInputHandler>()->SetHandleWindow(hWnd);
 	game->GetService<CInputHandler>()->Initialize();
 	game->AddService(new CScenes);
-	game->GetService<CScenes>()->Load(L"mario-sample.txt");
+	game->GetService<CScenes>()->Load(L"database\\mario-sample.txt");
 }
 
 void CGame::GameRun()

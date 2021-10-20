@@ -4,6 +4,7 @@
 #include "Transform.h"
 #include "PlayScene.h"
 #include "Scenes.h"
+#include "Portal.h"
 
 void CMario::InitAnimations()
 {
@@ -40,8 +41,6 @@ void CMario::Update(DWORD dt)
 	if (state != MARIO_STATE_DIE)
 		collider->CalcPotentialCollisions(&coObjects, coEvents);
 
-	/*DebugOut(L"coO: %d, coEvent: %d\n", coObjects.size(), coEvents.size());*/
-
 	if (coEvents.size() == 0)
 	{
 		transform.position.x += velocity.x * dt;
@@ -53,7 +52,6 @@ void CMario::Update(DWORD dt)
 		Vector2 vNormal = VectorZero();
 
 		collider->FilterCollision(coEvents, coEventsResult, min_tx, min_ty, vNormal);
-		/*DebugOut(L"Collider with brick!\n");*/
 
 		// block 
 		transform.position.x += min_tx * velocity.x * dt + vNormal.x * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
@@ -61,6 +59,17 @@ void CMario::Update(DWORD dt)
 
 		if (vNormal.x != 0) velocity.x = 0;
 		if (vNormal.y != 0) velocity.y = 0;
+
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+
+			if (dynamic_cast<CPortal*>(e->obj))
+			{
+				CPortal* p = dynamic_cast<CPortal*>(e->obj);
+				CGame::GetInstance()->GetService<CScenes>()->SwitchScene(p->GetSceneId());
+			}
+		}
 	}
 
 	// clean up collision events

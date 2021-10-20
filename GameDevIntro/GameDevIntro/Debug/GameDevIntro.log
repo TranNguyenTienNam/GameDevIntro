@@ -1,61 +1,6 @@
-﻿  Animation.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  AnimationFrame.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  Animations.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  Brick.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  Collider2D.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  Game.cpp
+﻿  Mario.cpp
   C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
 E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\InputHandler.h(8,1): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h(42): message : see previous definition of 'DIRECTINPUT_VERSION'
-  GameObject.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  InputHandler.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\InputHandler.h(8,1): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
-C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h(42): message : see previous definition of 'DIRECTINPUT_VERSION'
-  KeyEventHandler.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\InputHandler.h(8,1): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
-C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h(42): message : see previous definition of 'DIRECTINPUT_VERSION'
-  main.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  Mario.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\InputHandler.h(8,1): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
-C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h(42): message : see previous definition of 'DIRECTINPUT_VERSION'
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\Mario.cpp(97,41): warning C4305: '=': truncation from 'double' to 'FLOAT'
-  PlayScene.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\InputHandler.h(8,1): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
-C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h(42): message : see previous definition of 'DIRECTINPUT_VERSION'
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\PlayScene.cpp(84,20): warning C4018: '<': signed/unsigned mismatch
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\PlayScene.cpp(106,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\PlayScene.cpp(107,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\PlayScene.cpp(128,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\PlayScene.cpp(129,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\PlayScene.cpp(223,20): warning C4018: '<': signed/unsigned mismatch
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\PlayScene.cpp(232,20): warning C4018: '<': signed/unsigned mismatch
-  Portal.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\Portal.cpp(8,16): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\Portal.cpp(9,17): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\Portal.cpp(29,33): warning C4244: '=': conversion from 'float' to 'LONG', possible loss of data
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\Portal.cpp(30,35): warning C4244: '=': conversion from 'float' to 'LONG', possible loss of data
-  Scenes.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\InputHandler.h(8,1): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
-C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h(42): message : see previous definition of 'DIRECTINPUT_VERSION'
-  ServiceLocator.cpp
-  Sprites.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  Textures.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  Transform.cpp
-  Utils.cpp
-  Generating Code...
+E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\GameDevIntro\Mario.cpp(106,41): warning C4305: '=': truncation from 'double' to 'FLOAT'
   GameDevIntro.vcxproj -> E:\Projects\VisualStudioProjects\GameDevIntro\GameDevIntro\Debug\GameDevIntro.exe

@@ -1,12 +1,12 @@
 #include "Portal.h"
 
-CPortal::CPortal(float l, float t, float r, float b, int scene_id)
+CPortal::CPortal(float l, float t, float w, float h, int scene_id)
 {
 	this->scene_id = scene_id;
 	transform.position.x = l;
 	transform.position.y = t;
-	width = r - l + 1;
-	height = b - t + 1;
+	width = w;
+	height = h;
 	GetCollider()->SetGameObject(this);
 }
 
