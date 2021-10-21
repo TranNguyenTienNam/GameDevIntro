@@ -49,16 +49,17 @@ void CMario::Update(DWORD dt)
 	else
 	{
 		float min_tx, min_ty;
-		Vector2 vNormal = VectorZero();
+		float nx, ny;
+		nx = ny = 0;
 
-		collider->FilterCollision(coEvents, coEventsResult, min_tx, min_ty, vNormal);
+		collider->FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
 		// block 
-		transform.position.x += min_tx * velocity.x * dt + vNormal.x * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		transform.position.y += min_ty * velocity.y * dt + vNormal.y * 0.4f;
+		transform.position.x += min_tx * velocity.x * dt + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
+		transform.position.y += min_ty * velocity.y * dt + ny * 0.4f;
 
-		if (vNormal.x != 0) velocity.x = 0;
-		if (vNormal.y != 0) velocity.y = 0;
+		if (nx != 0) velocity.x = 0;
+		if (ny != 0) velocity.y = 0;
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{

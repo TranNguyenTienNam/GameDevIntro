@@ -9,9 +9,8 @@ typedef CCollisionEvent* LPCOLLISIONEVENT;
 struct CCollisionEvent
 {
 	CGameObject* obj;
-	Vector2 vNormal;
-	float t;
-	CCollisionEvent(float t, Vector2 vNormal, CGameObject* obj = NULL) { this->t = t; this->vNormal = vNormal; this->obj = obj; }
+	float nx, ny, t;
+	CCollisionEvent(float t, float nx, float ny, CGameObject* obj = NULL) { this->t = t; this->nx = nx; this->ny = ny; this->obj = obj; }
 
 	static bool compare(const LPCOLLISIONEVENT& a, LPCOLLISIONEVENT& b)
 	{
@@ -28,15 +27,14 @@ public:
 	static void SweptAABB(
 		RectF movingRect, RectF staticRect,
 		float dx, float dy, 
-		Vector2& vNormal, float& deltaTime);
+		float& nx, float& ny, float& deltaTime);
 	LPCOLLISIONEVENT SweptAABBEx(CGameObject* coO);
 	void CalcPotentialCollisions(std::vector<CGameObject*>* coObjects, std::vector<LPCOLLISIONEVENT>& coEvents);
 	void FilterCollision(
 		std::vector<LPCOLLISIONEVENT>& coEvents,
 		std::vector<LPCOLLISIONEVENT>& coEventsResult,
-		float& min_tx,
-		float& min_ty,
-		Vector2& vNormal);
+		float& min_tx, float& min_ty,
+		float& nx, float& ny);
 
 	CGameObject* GetGameObject() { return this->object; }
 	void SetGameObject(CGameObject* gameObject) { this->object = gameObject; }

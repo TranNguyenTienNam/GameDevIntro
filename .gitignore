@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+*.pdb
+GameDevIntro/.vs/GameDevIntro/v16/.suo
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+*.ipch
+*.recipe
+*.ilk
+*.log
+*.tlog
+*.idb

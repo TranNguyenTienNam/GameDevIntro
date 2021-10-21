@@ -5,7 +5,7 @@
 void CCollider2D::SweptAABB(
 	RectF movingRect, RectF staticRect,
 	float dx, float dy, 
-	Vector2& vNormal, float& t)
+	float& nx, float& ny, float& t)
 {
 	float dx_entry, dx_exit, tx_entry, tx_exit;
 	float dy_entry, dy_exit, ty_entry, ty_exit;
@@ -13,7 +13,7 @@ void CCollider2D::SweptAABB(
 	float t_entry, t_exit;
 
 	t = -1.0f;			// no collision
-	vNormal = VectorZero();
+	nx = ny = 0.0f;
 
 	//
 	// Broad-phase test 
@@ -84,25 +84,13 @@ void CCollider2D::SweptAABB(
 
 	if (tx_entry > ty_entry)
 	{
-		if (dx > 0)
-		{
-			vNormal = Vector2(-1.0f, 0.0f);
-		}
-		else
-		{
-			vNormal = Vector2(1.0f, 0.0f);
-		}
+		ny = 0.0f;
+		dx > 0 ? nx = -1.0f : nx = 1.0f;
 	}
 	else
 	{
-		if (dy > 0)
-		{
-			vNormal = Vector2(0.0f, -1.0f);
-		}
-		else
-		{
-			vNormal = Vector2(0.0f, 1.0f);
-		}
+		nx = 0.0f;
+		dy > 0 ? ny = -1.0f : ny = 1.0f;
 	}
 }
 
@@ -113,8 +101,7 @@ LPCOLLISIONEVENT CCollider2D::SweptAABBEx(CGameObject* coO)
 {
 	RectF staticRect;		// static object bbox
 	RectF movingRect;		// moving object bbox
-	Vector2 vNormal;
-	float t;
+	float t, nx, ny;
 
 	staticRect = coO->GetCollider()->GetBoundingBox();
 
@@ -135,9 +122,9 @@ LPCOLLISIONEVENT CCollider2D::SweptAABBEx(CGameObject* coO)
 
 	SweptAABB(
 		movingRect, staticRect,
-		dx, dy, vNormal, t);
+		dx, dy, nx, ny, t);
 
-	CCollisionEvent* e = new CCollisionEvent(t, vNormal, coO);
+	CCollisionEvent* e = new CCollisionEvent(t, nx, ny, coO);
 	return e;
 }
 
@@ -170,14 +157,14 @@ void CCollider2D::FilterCollision(
 	std::vector<LPCOLLISIONEVENT>& coEvents,
 	std::vector<LPCOLLISIONEVENT>& coEventsResult,
 	float& min_tx, float& min_ty,
-	Vector2& vNormal)
+	float& nx, float& ny)
 {
 	min_tx = 1.0f;
 	min_ty = 1.0f;
 	int min_ix = -1;
 	int min_iy = -1;
 
-	vNormal = VectorZero();
+	nx = ny = 0.0f;
 
 	coEventsResult.clear();
 
@@ -185,12 +172,12 @@ void CCollider2D::FilterCollision(
 	{
 		LPCOLLISIONEVENT c = coEvents[i];
 
-		if (c->t < min_tx && c->vNormal.x != 0) {
-			min_tx = c->t; vNormal.x = c->vNormal.x; min_ix = i;
+		if (c->t < min_tx && c->nx != 0) {
+			min_tx = c->t; nx = c->nx; min_ix = i;
 		}
 
-		if (c->t < min_ty && c->vNormal.y != 0) {
-			min_ty = c->t; vNormal.y = c->vNormal.y; min_iy = i;
+		if (c->t < min_ty && c->ny != 0) {
+			min_ty = c->t; ny = c->ny; min_iy = i;
 		}
 	}
 
