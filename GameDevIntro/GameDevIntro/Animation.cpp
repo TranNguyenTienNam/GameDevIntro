@@ -6,7 +6,7 @@ void CAnimation::Add(std::string id, DWORD time)
 	LPSPRITE newSprite = CGame::GetInstance()->GetService<CSprites>()->Get(id);
 	LPANIMATION_FRAME frame = new CAnimationFrame(newSprite, time);
 	frames.push_back(frame);
-	DebugOut(L"[INFO] animation frame added: %s\t%d\n", ToWSTR(id).c_str(), frames.size());
+	/*DebugOut(L"[INFO] animation frame added: %s\t%d\n", ToWSTR(id).c_str(), frames.size());*/
 }
 
 void CAnimation::Render(Vector2 position, int alpha)

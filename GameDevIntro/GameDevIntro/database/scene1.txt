@@ -44,7 +44,6 @@ ani-small-mario-walk-right	spr-small-mario-walk-right-0	100	spr-small-mario-idle
 #die
 #599	10099	100
 
-
 # ==== BRICK =========
 ani-brick	spr-brick-0	100	spr-brick-1	100	spr-brick-2	100	spr-brick-3	100	spr-brick-4	100
 
@@ -52,7 +51,7 @@ ani-brick	spr-brick-0	100	spr-brick-1	100	spr-brick-2	100	spr-brick-3	100	spr-br
 # type	x	y	ani_set_id	extra_settings per object type
 # type: 0 = Mario , 1 = Brick, 2 = Goomba
 # MARIO
-0	50.0	0	1
+0	250.0	0	1
 
 # BRICK 
 # --- platform (hint: I created the list using Excel!) ----
@@ -103,5 +102,5 @@ ani-brick	spr-brick-0	100	spr-brick-1	100	spr-brick-2	100	spr-brick-3	100	spr-br
 
 # --- SCENE PORTAL ----
 # type	x	y	w	h	scene_id
-50	300	98	30	45	2
+50	300	98	100	100	1
 

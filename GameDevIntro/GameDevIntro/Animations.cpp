@@ -4,7 +4,7 @@
 void CAnimations::Add(std::string id, LPANIMATION anim)
 {
 	animations.insert(make_pair(id, anim));
-	DebugOut(L"[INFO] animation added: %s\n", ToWSTR(id).c_str());
+	/*DebugOut(L"[INFO] animation added: %s\n", ToWSTR(id).c_str());*/
 }
 
 LPANIMATION CAnimations::Get(std::string id)

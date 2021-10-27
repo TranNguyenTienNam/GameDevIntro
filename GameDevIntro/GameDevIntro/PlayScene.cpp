@@ -81,6 +81,7 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 	LPANIMATION ani = new CAnimation();
 
 	std::string ani_id = tokens[0].c_str();
+
 	for (int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
 	{
 		std::string sprite_id = tokens[i].c_str();
@@ -103,7 +104,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
 	int object_type = atoi(tokens[0].c_str());
-	DebugOut(L"[INFO] Object type: %d\n", object_type);
 	float x = atof(tokens[1].c_str());
 	float y = atof(tokens[2].c_str());
 	Vector2 pos = Vector2(x, y);
@@ -193,15 +193,6 @@ void CPlayScene::Load()
 
 void CPlayScene::Update(DWORD dt)
 {
-	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
-	// TO-DO: This is a "dirty" way, need a more organized way 
-
-	vector<CGameObject*> coObjects;
-	for (size_t i = 1; i < objects.size(); i++)
-	{
-		coObjects.push_back(objects[i]);
-	}
-
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt);

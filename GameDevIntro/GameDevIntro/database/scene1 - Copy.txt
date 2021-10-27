@@ -103,5 +103,5 @@ ani-brick	spr-brick-0	100	spr-brick-1	100	spr-brick-2	100	spr-brick-3	100	spr-br
 
 # --- SCENE PORTAL ----
 # type	x	y	w	h	scene_id
-50	300	98	30	45	1
+50	300	98	30	60	1
 

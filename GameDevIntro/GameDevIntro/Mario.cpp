@@ -24,10 +24,10 @@ CMario::CMario() :CGameObject()
 
 void CMario::Update(DWORD dt)
 {
-	UpdateBoundingBox();
-
 	// simple fall down
 	velocity.y += MARIO_GRAVITY * dt;
+	
+	UpdateBoundingBox();
 
 	std::vector<LPCOLLISIONEVENT> coEvents;
 	std::vector<LPCOLLISIONEVENT> coEventsResult;
@@ -67,8 +67,9 @@ void CMario::Update(DWORD dt)
 
 			if (dynamic_cast<CPortal*>(e->obj))
 			{
-				CPortal* p = dynamic_cast<CPortal*>(e->obj);
+				auto p = dynamic_cast<CPortal*>(e->obj);
 				CGame::GetInstance()->GetService<CScenes>()->SwitchScene(p->GetSceneId());
+				return;
 			}
 		}
 	}

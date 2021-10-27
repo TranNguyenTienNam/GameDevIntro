@@ -67,7 +67,6 @@ void CScenes::SwitchScene(int scene_id)
 {
 	DebugOut(L"[INFO] Switching to scene %d\n", scene_id);
 
-	/*if (scenes[current_scene] != NULL) */
 	scenes[current_scene]->Unload();
 
 	auto game = CGame::GetInstance();

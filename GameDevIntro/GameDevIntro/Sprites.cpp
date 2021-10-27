@@ -18,7 +18,7 @@ void CSprite::Draw(Vector2 position, int alpha)
 void CSprites::Add(std::string id, int left, int top, int width, int height, LPDIRECT3DTEXTURE9 texture)
 {
 	sprites.insert(make_pair(id, new CSprite(left, top, width, height, texture)));
-	DebugOut(L"[INFO] sprite added: %s\t%d\t%d\t%d\t%d\n", ToWSTR(id).c_str(), left, top, height, width);
+	/*DebugOut(L"[INFO] sprite added: %s\t%d\t%d\t%d\t%d\n", ToWSTR(id).c_str(), left, top, height, width);*/
 }
 
 LPSPRITE CSprites::Get(std::string id)
