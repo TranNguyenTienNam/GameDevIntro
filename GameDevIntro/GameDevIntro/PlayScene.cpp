@@ -6,11 +6,21 @@
 #include "Utils.h"
 #include "Animations.h"
 #include "Portal.h"
+#include "Brick.h"
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CPlayScenceKeyHandler(this);
+
+	int screenWidth = CGame::GetInstance()->GetScreenWidth();
+	int screenHeight = CGame::GetInstance()->GetScreenHeight();
+	grid = std::make_unique<CGrid>(screenWidth, screenHeight, CELL_SIZE);
+}
+
+CPlayScene::~CPlayScene()
+{
+
 }
 
 /*
@@ -141,6 +151,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	// General object setup
 	obj->SetPosition(pos);
 	objects.push_back(obj);
+
+	grid->AddGameObject(obj);
 }
 
 void CPlayScene::Load()
@@ -195,7 +207,66 @@ void CPlayScene::Update(DWORD dt)
 {
 	for (size_t i = 0; i < objects.size(); i++)
 	{
+		int k = objects[i]->GetCellVectorIndex();
+		int x = k % grid->m_numXCells;
+		int y = k / grid->m_numXCells;
+
+		std::vector<CGameObject*> coObjects = grid->m_cells[k].gameObjects;
+		std::vector<CGameObject*> tail;
+
+		if (x > 0)
+		{
+			tail = grid->GetCell(x - 1, y)->gameObjects;
+			coObjects.insert(coObjects.end(), tail.begin(), tail.end());
+			if (y > 0)
+			{
+				tail = grid->GetCell(x - 1, y - 1)->gameObjects;
+				coObjects.insert(coObjects.end(), tail.begin(), tail.end());
+			}
+			if (y < grid->m_numYCells - 1)
+			{
+				tail = grid->GetCell(x - 1, y + 1)->gameObjects;
+				coObjects.insert(coObjects.end(), tail.begin(), tail.end());
+			}
+		}
+		if (x < grid->m_numXCells - 1)
+		{
+			tail = grid->GetCell(x + 1, y)->gameObjects;
+			coObjects.insert(coObjects.end(), tail.begin(), tail.end());
+			if (y > 0)
+			{
+				tail = grid->GetCell(x + 1, y - 1)->gameObjects;
+				coObjects.insert(coObjects.end(), tail.begin(), tail.end());
+			}
+			if (y < grid->m_numYCells - 1)
+			{
+				tail = grid->GetCell(x + 1, y + 1)->gameObjects;
+				coObjects.insert(coObjects.end(), tail.begin(), tail.end());
+			}
+		}
+		if (y > 0)
+		{
+			tail = grid->GetCell(x, y - 1)->gameObjects;
+			coObjects.insert(coObjects.end(), tail.begin(), tail.end());
+		}
+		if (y < grid->m_numYCells - 1)
+		{
+			tail = grid->GetCell(x, y + 1)->gameObjects;
+			coObjects.insert(coObjects.end(), tail.begin(), tail.end());
+		}
+
+		/*DebugOut(L"coObjects: %d\n", coObjects.size());*/
+		objects[i]->UpdateBoundingBox();
+		objects[i]->PhysicsUpdate(&coObjects);
 		objects[i]->Update(dt);
+
+		// Check to see if the game object moved
+		Cell* newCell = grid->GetCell(objects[i]->GetPosition());
+		if (newCell != nullptr && newCell != objects[i]->GetCell())
+		{
+			grid->RemoveGameObjectFromCell(objects[i]);
+			grid->AddGameObject(objects[i], newCell);
+		}
 	}
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
@@ -214,7 +285,10 @@ void CPlayScene::Update(DWORD dt)
 void CPlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
+	{
 		objects[i]->Render();
+		/*objects[i]->RenderBoundingBox();*/
+	}
 }
 
 /*

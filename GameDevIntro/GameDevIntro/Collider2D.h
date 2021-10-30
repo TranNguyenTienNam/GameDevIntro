@@ -20,7 +20,12 @@ struct CCollisionEvent
 
 class CCollider2D
 {
+private:
+	std::vector<LPCOLLISIONEVENT> coEvents;
+	std::vector<LPCOLLISIONEVENT> coEventsResult;
 protected:
+	bool isTrigger = false;
+	bool isDynamic = false;
 	CGameObject* object;
 	RectF boundingBox;
 public:
@@ -35,10 +40,14 @@ public:
 		std::vector<LPCOLLISIONEVENT>& coEventsResult,
 		float& min_tx, float& min_ty,
 		float& nx, float& ny);
+	void PhysicsUpdate(std::vector<CGameObject*>* coObjects);
 
 	CGameObject* GetGameObject() { return this->object; }
 	void SetGameObject(CGameObject* gameObject) { this->object = gameObject; }
 
 	RectF GetBoundingBox() { return this->boundingBox; }
 	void SetBoundingBox(const RectF& boundingBox) { this->boundingBox = boundingBox; }
+
+	void SetDynamic() { this->isDynamic = true; }
+	void SetStatic() { this->isDynamic = false; }
 };

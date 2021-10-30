@@ -18,64 +18,13 @@ void CMario::InitAnimations()
 CMario::CMario() :CGameObject()
 {
 	InitAnimations();
-	GetCollider()->SetGameObject(this);
-	UpdateBoundingBox();
+	collider->SetGameObject(this);
+	collider->SetDynamic();
 }
 
 void CMario::Update(DWORD dt)
 {
-	// simple fall down
-	velocity.y += MARIO_GRAVITY * dt;
 	
-	UpdateBoundingBox();
-
-	std::vector<LPCOLLISIONEVENT> coEvents;
-	std::vector<LPCOLLISIONEVENT> coEventsResult;
-
-	coEvents.clear();
-
-	// turn off collision when die 
-	auto current_scene = CGame::GetInstance()->GetService<CScenes>()->GetCurrentScene();
-	auto coObjects = dynamic_cast<CPlayScene*>(current_scene)->GetGameObjects();
-
-	if (state != MARIO_STATE_DIE)
-		collider->CalcPotentialCollisions(&coObjects, coEvents);
-
-	if (coEvents.size() == 0)
-	{
-		transform.position.x += velocity.x * dt;
-		transform.position.y += velocity.y * dt;
-	}
-	else
-	{
-		float min_tx, min_ty;
-		float nx, ny;
-		nx = ny = 0;
-
-		collider->FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
-
-		// block 
-		transform.position.x += min_tx * velocity.x * dt + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		transform.position.y += min_ty * velocity.y * dt + ny * 0.4f;
-
-		if (nx != 0) velocity.x = 0;
-		if (ny != 0) velocity.y = 0;
-
-		for (UINT i = 0; i < coEventsResult.size(); i++)
-		{
-			LPCOLLISIONEVENT e = coEventsResult[i];
-
-			if (dynamic_cast<CPortal*>(e->obj))
-			{
-				auto p = dynamic_cast<CPortal*>(e->obj);
-				CGame::GetInstance()->GetService<CScenes>()->SwitchScene(p->GetSceneId());
-				return;
-			}
-		}
-	}
-
-	// clean up collision events
-	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
 void CMario::Render()
@@ -120,4 +69,21 @@ void CMario::UpdateBoundingBox()
 	boundingBox.right = transform.position.x + MARIO_WIDTH;
 	boundingBox.bottom = transform.position.y + MARIO_HEIGHT;
 	collider->SetBoundingBox(boundingBox);
+}
+
+void CMario::OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions)
+{
+	for (UINT i = 0; i < collisions.size(); i++)
+	{
+		LPCOLLISIONEVENT e = collisions[i];
+
+		if (dynamic_cast<CPortal*>(e->obj))
+		{
+			DebugOut(L"Collide with portal\n");
+			auto p = dynamic_cast<CPortal*>(e->obj);
+			CGame::GetInstance()->GetService<CScenes>()->SwitchScene(p->GetSceneId());
+			return;
+		}
+		else DebugOut(L"Collide with brick\n");
+	}
 }

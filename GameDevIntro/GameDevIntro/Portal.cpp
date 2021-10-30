@@ -12,7 +12,7 @@ CPortal::CPortal(float l, float t, float w, float h, int scene_id)
 
 void CPortal::Update(DWORD dt)
 {
-	UpdateBoundingBox();
+
 }
 
 void CPortal::Render()
@@ -29,7 +29,7 @@ void CPortal::Render()
 	rect.right = boundingBox.right - boundingBox.left;
 	rect.bottom = boundingBox.bottom - boundingBox.top;
 
-	CGame::GetInstance()->Draw(p, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+	CGame::GetInstance()->Draw(p, bbox, rect.left, rect.top, rect.right, rect.bottom, 255);
 }
 
 void CPortal::UpdateBoundingBox()

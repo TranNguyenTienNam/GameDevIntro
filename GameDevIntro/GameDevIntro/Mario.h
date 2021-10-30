@@ -31,4 +31,5 @@ public:
 	void SetState(int state);
 
 	void UpdateBoundingBox();
+	void OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions);
 };

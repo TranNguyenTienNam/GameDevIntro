@@ -34,6 +34,9 @@
     <Filter Include="Framework\Scene">
       <UniqueIdentifier>{e4d9bb87-6c54-48d9-9a52-181e83a712a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Space partition">
+      <UniqueIdentifier>{d1021361-6534-4080-b8e6-af4b0580a91a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mario.h">
@@ -96,6 +99,9 @@
     <ClInclude Include="Textures.h">
       <Filter>Framework\Texture</Filter>
     </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Framework\Space partition</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -154,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="Textures.cpp">
       <Filter>Framework\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Framework\Space partition</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

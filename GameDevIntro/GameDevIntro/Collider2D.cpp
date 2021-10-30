@@ -1,6 +1,7 @@
 #include <algorithm>    
 #include "Collider2D.h"
 #include "Utils.h"
+#include "Mario.h"
 
 void CCollider2D::SweptAABB(
 	RectF movingRect, RectF staticRect,
@@ -25,7 +26,7 @@ void CCollider2D::SweptAABB(
 	rBroadPhase.right = dx > 0 ? movingRect.right + dx : movingRect.right;
 	rBroadPhase.bottom = dy > 0 ? movingRect.bottom + dy : movingRect.bottom;
 
-	if (!rBroadPhase.Overlap(staticRect) && !rBroadPhase.Contain(staticRect)) return;
+	if (!rBroadPhase.Overlap(staticRect)) return;
 
 	if (dx == 0 && dy == 0) return;		// moving object is not moving > obvious no collision
 
@@ -140,14 +141,14 @@ void CCollider2D::CalcPotentialCollisions(
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
-		//if (coObjects->at(i) == object) return; // Don't check collision with itself
+		if (object != coObjects->at(i)) {
+			LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
-		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
-
-		if (e->t > 0 && e->t <= 1.0f)
-			coEvents.push_back(e);
-		else
-			delete e;
+			if (e->t > 0 && e->t <= 1.0f)
+				coEvents.push_back(e);
+			else
+				delete e;
+		}		
 	}
 
 	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
@@ -183,4 +184,49 @@ void CCollider2D::FilterCollision(
 
 	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
 	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
+}
+
+void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
+{
+	// [WARNING] return when game object is not enabled, is nullptr, static
+	if (object == nullptr || isDynamic == false) return;
+
+	auto dt = CGame::GetDeltaTime();
+	auto pos = object->GetPosition();
+	auto velocity = object->GetSpeed();
+	velocity.y += 0.0026f * dt; // [WARNING] need to adjust gravity by mass
+	object->SetSpeed(velocity);
+
+	coEvents.clear();
+	coEventsResult.clear();
+
+	CalcPotentialCollisions(coObjects, coEvents);
+
+	if (coEvents.size() == 0)
+	{
+		pos.x += velocity.x * dt;
+		pos.y += velocity.y * dt;
+		if (pos.y > 300) pos.y = 300;
+		object->SetPosition(pos);
+	}
+	else
+	{
+		float min_tx, min_ty;
+		float nx = 0, ny;
+
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
+
+		// block if isTrigger false
+		pos.x += min_tx * velocity.x * dt + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
+		pos.y += min_ty * velocity.y * dt + ny * 0.4f;
+		object->SetPosition(pos);
+
+		if (nx != 0) velocity.x = 0;
+		if (ny != 0) velocity.y = 0;
+		object->SetSpeed(velocity);
+
+		if (nx != 0 || ny != 0) object->OnCollisionEnter(this, coEventsResult);
+	}
+
+	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }

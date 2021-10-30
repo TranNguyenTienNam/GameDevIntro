@@ -12,8 +12,8 @@
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(0, 0, 0)
 
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
 
 #define MISC_TEXTURE_PATH L"textures/misc.png"
 #define MARIO_TEXTURE_PATH L"textures/mario.png"

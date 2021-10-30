@@ -10,12 +10,11 @@ void CBrick::InitAnimations()
 CBrick::CBrick() :CGameObject()
 {
 	InitAnimations();
-	UpdateBoundingBox();
 }
 
 void CBrick::Update(DWORD dt)
 {
-	UpdateBoundingBox();
+
 }
 
 void CBrick::Render()

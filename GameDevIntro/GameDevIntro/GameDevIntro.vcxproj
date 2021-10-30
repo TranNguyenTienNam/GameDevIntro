@@ -152,6 +152,7 @@
     <ClInclude Include="Collider2D.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Mario.h" />
@@ -174,6 +175,7 @@
     <ClCompile Include="Collider2D.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="KeyEventHandler.cpp" />
     <ClCompile Include="main.cpp" />
