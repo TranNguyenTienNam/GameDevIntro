@@ -2,8 +2,8 @@
 
 CGameObject::CGameObject()
 {
-	transform.position.x = transform.position.y = 0;
-	velocity.x = velocity.y = 0;
+	transform.position = VectorZero();
+	velocity = VectorZero();
 	this->collider = new CCollider2D;
 }
 

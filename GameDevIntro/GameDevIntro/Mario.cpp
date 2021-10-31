@@ -73,7 +73,7 @@ void CMario::UpdateBoundingBox()
 
 void CMario::OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions)
 {
-	for (UINT i = 0; i < collisions.size(); i++)
+	/*for (UINT i = 0; i < collisions.size(); i++)
 	{
 		LPCOLLISIONEVENT e = collisions[i];
 
@@ -84,6 +84,10 @@ void CMario::OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionE
 			CGame::GetInstance()->GetService<CScenes>()->SwitchScene(p->GetSceneId());
 			return;
 		}
-		else DebugOut(L"Collide with brick\n");
-	}
+	}*/
+}
+
+void CMario::OnTriggerEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions)
+{
+
 }

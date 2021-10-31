@@ -15,7 +15,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 
 	int screenWidth = CGame::GetInstance()->GetScreenWidth();
 	int screenHeight = CGame::GetInstance()->GetScreenHeight();
-	grid = std::make_unique<CGrid>(screenWidth, screenHeight, CELL_SIZE);
+	grid = std::make_unique<CGrid>(screenWidth * 10, screenHeight * 3, CELL_SIZE);
 }
 
 CPlayScene::~CPlayScene()
@@ -211,7 +211,7 @@ void CPlayScene::Update(DWORD dt)
 		int x = k % grid->m_numXCells;
 		int y = k / grid->m_numXCells;
 
-		std::vector<CGameObject*> coObjects = grid->m_cells[k].gameObjects;
+		std::vector<CGameObject*> coObjects = objects[i]->GetCell()->gameObjects;
 		std::vector<CGameObject*> tail;
 
 		if (x > 0)
@@ -255,7 +255,6 @@ void CPlayScene::Update(DWORD dt)
 			coObjects.insert(coObjects.end(), tail.begin(), tail.end());
 		}
 
-		/*DebugOut(L"coObjects: %d\n", coObjects.size());*/
 		objects[i]->UpdateBoundingBox();
 		objects[i]->PhysicsUpdate(&coObjects);
 		objects[i]->Update(dt);
@@ -298,7 +297,6 @@ void CPlayScene::Unload()
 {
 	for (int i = 0; i < objects.size(); i++)
 		delete objects[i];
-
 	objects.clear();
 	player = NULL;
 

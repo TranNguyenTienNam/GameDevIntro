@@ -24,6 +24,9 @@ private:
 	std::vector<LPCOLLISIONEVENT> coEvents;
 	std::vector<LPCOLLISIONEVENT> coEventsResult;
 protected:
+	float dx;
+	float dy;
+
 	bool isTrigger = false;
 	bool isDynamic = false;
 	CGameObject* object;

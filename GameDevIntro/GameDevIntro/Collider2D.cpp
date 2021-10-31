@@ -2,6 +2,7 @@
 #include "Collider2D.h"
 #include "Utils.h"
 #include "Mario.h"
+#include "Portal.h"
 
 void CCollider2D::SweptAABB(
 	RectF movingRect, RectF staticRect,
@@ -107,23 +108,18 @@ LPCOLLISIONEVENT CCollider2D::SweptAABBEx(CGameObject* coO)
 	staticRect = coO->GetCollider()->GetBoundingBox();
 
 	// deal with moving object: m speed = original m speed - collide object speed
-	float svx = coO->GetSpeed().x;
-	float svy = coO->GetSpeed().y;
+	float sdx = coO->GetSpeed().x * CGame::GetDeltaTime();
+	float sdy = coO->GetSpeed().y * CGame::GetDeltaTime();
 
-	float sdx = svx * CGame::GetDeltaTime();
-	float sdy = svy * CGame::GetDeltaTime();
-
-	float mvx = object->GetSpeed().x;
-	float mvy = object->GetSpeed().y;
-
-	float dx = mvx * CGame::GetDeltaTime() - sdx;
-	float dy = mvy * CGame::GetDeltaTime() - sdy;
+	// (rdx, rdy) is RELATIVE movement distance/velocity 
+	float rdx = this->dx - sdx;
+	float rdy = this->dy - sdy;
 
 	movingRect = GetBoundingBox();
 
 	SweptAABB(
 		movingRect, staticRect,
-		dx, dy, nx, ny, t);
+		rdx, rdy, nx, ny, t);
 
 	CCollisionEvent* e = new CCollisionEvent(t, nx, ny, coO);
 	return e;
@@ -148,7 +144,7 @@ void CCollider2D::CalcPotentialCollisions(
 				coEvents.push_back(e);
 			else
 				delete e;
-		}		
+		}
 	}
 
 	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
@@ -194,18 +190,20 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 	auto dt = CGame::GetDeltaTime();
 	auto pos = object->GetPosition();
 	auto velocity = object->GetSpeed();
+	this->dx = velocity.x * dt;
+	this->dy = velocity.y * dt;
+
 	velocity.y += 0.0026f * dt; // [WARNING] need to adjust gravity by mass
 	object->SetSpeed(velocity);
 
 	coEvents.clear();
-	coEventsResult.clear();
 
 	CalcPotentialCollisions(coObjects, coEvents);
 
 	if (coEvents.size() == 0)
 	{
-		pos.x += velocity.x * dt;
-		pos.y += velocity.y * dt;
+		pos.x += dx;
+		pos.y += dy;
 		if (pos.y > 300) pos.y = 300;
 		object->SetPosition(pos);
 	}
@@ -217,8 +215,8 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
 		// block if isTrigger false
-		pos.x += min_tx * velocity.x * dt + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		pos.y += min_ty * velocity.y * dt + ny * 0.4f;
+		pos.x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
+		pos.y += min_ty * dy + ny * 0.4f;
 		object->SetPosition(pos);
 
 		if (nx != 0) velocity.x = 0;

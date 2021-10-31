@@ -45,7 +45,6 @@ Cell* CGrid::GetCell(int x, int y)
 
 Cell* CGrid::GetCell(const Vector2& pos)
 {
-	DebugOut(L"pos %g %g\n", pos.x, pos.y);
 	int cellX = (int)(pos.x / m_cellSize);
 	int cellY = (int)(pos.y / m_cellSize);
 
