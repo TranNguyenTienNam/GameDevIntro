@@ -12,10 +12,6 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
 	key_handler = new CPlayScenceKeyHandler(this);
-
-	int screenWidth = CGame::GetInstance()->GetScreenWidth();
-	int screenHeight = CGame::GetInstance()->GetScreenHeight();
-	grid = std::make_unique<CGrid>(screenWidth * 10, screenHeight * 3, CELL_SIZE);
 }
 
 CPlayScene::~CPlayScene()
@@ -159,6 +155,10 @@ void CPlayScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
 
+	int screenWidth = CGame::GetInstance()->GetScreenWidth();
+	int screenHeight = CGame::GetInstance()->GetScreenHeight();
+	grid = std::make_unique<CGrid>(screenWidth * 10, screenHeight * 3, CELL_SIZE);
+
 	ifstream f;
 	f.open(sceneFilePath);
 
@@ -207,53 +207,7 @@ void CPlayScene::Update(DWORD dt)
 {
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		int k = objects[i]->GetCellVectorIndex();
-		int x = k % grid->m_numXCells;
-		int y = k / grid->m_numXCells;
-
-		std::vector<CGameObject*> coObjects = objects[i]->GetCell()->gameObjects;
-		std::vector<CGameObject*> tail;
-
-		if (x > 0)
-		{
-			tail = grid->GetCell(x - 1, y)->gameObjects;
-			coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-			if (y > 0)
-			{
-				tail = grid->GetCell(x - 1, y - 1)->gameObjects;
-				coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-			}
-			if (y < grid->m_numYCells - 1)
-			{
-				tail = grid->GetCell(x - 1, y + 1)->gameObjects;
-				coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-			}
-		}
-		if (x < grid->m_numXCells - 1)
-		{
-			tail = grid->GetCell(x + 1, y)->gameObjects;
-			coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-			if (y > 0)
-			{
-				tail = grid->GetCell(x + 1, y - 1)->gameObjects;
-				coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-			}
-			if (y < grid->m_numYCells - 1)
-			{
-				tail = grid->GetCell(x + 1, y + 1)->gameObjects;
-				coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-			}
-		}
-		if (y > 0)
-		{
-			tail = grid->GetCell(x, y - 1)->gameObjects;
-			coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-		}
-		if (y < grid->m_numYCells - 1)
-		{
-			tail = grid->GetCell(x, y + 1)->gameObjects;
-			coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-		}
+		std::vector<CGameObject*> coObjects = grid->GetPotentialObjects(objects[i]);
 
 		objects[i]->UpdateBoundingBox();
 		objects[i]->PhysicsUpdate(&coObjects);
@@ -288,6 +242,13 @@ void CPlayScene::Render()
 		objects[i]->Render();
 		/*objects[i]->RenderBoundingBox();*/
 	}
+
+	for (int i = 0; i < grid->m_cells.size(); i++)
+	{
+		int x = i % grid->m_numXCells;
+		int y = i / grid->m_numXCells;
+		grid->RenderBoundingBox(x, y);
+	}
 }
 
 /*
@@ -299,6 +260,7 @@ void CPlayScene::Unload()
 		delete objects[i];
 	objects.clear();
 	player = NULL;
+	grid.reset();
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }

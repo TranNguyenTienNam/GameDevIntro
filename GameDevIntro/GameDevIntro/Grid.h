@@ -16,7 +16,11 @@ public:
 	void AddGameObject(CGameObject* gameObject, Cell* cell);	// Add a game object to the specified cell
 	Cell* GetCell(int x, int y);								// Get cell based on cell coordinates
 	Cell* GetCell(const Vector2& pos);							// Get cell based on window coordinates
+	Vector2 GetCellCoord(const Vector2& pos);
 	void RemoveGameObjectFromCell(CGameObject* gameObject);
+
+	void RenderBoundingBox(int x, int y);
+	std::vector<CGameObject*> GetPotentialObjects(CGameObject* object);
 private:
 	std::vector<Cell> m_cells;
 	int m_cellSize;
