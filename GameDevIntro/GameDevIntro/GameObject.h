@@ -44,7 +44,7 @@ public:
 
 	void AddAnimation(std::string stateName, LPANIMATION animation);
 
-	virtual void UpdateBoundingBox() = 0;
+	virtual void UpdateBoundingBox() = 0;	// TODO: Bounding box cannot be updated according to animation frame size
 	virtual void PhysicsUpdate(std::vector<CGameObject*>* coObjects);
 	virtual void Update(DWORD dt) = 0;
 	virtual void Render() = 0;

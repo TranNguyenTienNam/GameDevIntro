@@ -24,11 +24,12 @@ CPlayScene::~CPlayScene()
 	See scene1.txt, scene2.txt for detail format specification
 */
 
-#define SCENE_SECTION_UNKNOWN -1
-#define SCENE_SECTION_TEXTURES 2
-#define SCENE_SECTION_SPRITES 3
-#define SCENE_SECTION_ANIMATIONS 4
-#define SCENE_SECTION_OBJECTS	6
+#define SCENE_SECTION_UNKNOWN			-1
+#define SCENE_SECTION_BACKGROUND_COLOR	1
+#define SCENE_SECTION_TEXTURES			2
+#define SCENE_SECTION_SPRITES			3
+#define SCENE_SECTION_ANIMATIONS		4
+#define SCENE_SECTION_OBJECTS			6
 
 #define OBJECT_TYPE_MARIO	0
 #define OBJECT_TYPE_BRICK	1
@@ -37,6 +38,18 @@ CPlayScene::~CPlayScene()
 
 #define MAX_SCENE_LINE 1024
 
+void CPlayScene::_ParseSection_BACKGROUND_COLOR(string line)
+{
+	vector<string> tokens = split(line);
+
+	if (tokens.size() < 3) return;	// skip invalid lines
+
+	int R = atoi(tokens[0].c_str());
+	int G = atoi(tokens[1].c_str());
+	int B = atoi(tokens[2].c_str());
+
+	CGame::GetInstance()->SetBackgroundColor(D3DCOLOR_XRGB(R, G, B));
+}
 
 void CPlayScene::_ParseSection_TEXTURES(string line)
 {
@@ -109,16 +122,15 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
-	int object_type = atoi(tokens[0].c_str());
+	string object_type = tokens[0].c_str();
 	float x = atof(tokens[1].c_str());
 	float y = atof(tokens[2].c_str());
 	Vector2 pos = Vector2(x, y);
 
 	CGameObject* obj = NULL;
 
-	switch (object_type)
+	if (object_type == "obj-mario")
 	{
-	case OBJECT_TYPE_MARIO:
 		if (player != NULL)
 		{
 			DebugOut(L"[ERROR] MARIO object was created before!\n");
@@ -128,9 +140,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		player = (CMario*)obj;
 
 		DebugOut(L"[INFO] Player object created!\n");
-		break;
-	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
-	case OBJECT_TYPE_PORTAL:
+	}
+	else if (object_type == "obj-brick") obj = new CBrick();
+	else if (object_type == "obj-portal")
 	{
 		float w = atof(tokens[3].c_str());
 		float h = atof(tokens[4].c_str());
@@ -138,9 +150,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CPortal(x, y, w, h, scene_id);
 		DebugOut(L"[INFO] Portal object created!\n");
 	}
-	break;
-	default:
-		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
+	else
+	{
+		DebugOut(L"[ERR] Invalid object type: %s\n", ToWSTR(object_type).c_str());
 		return;
 	}
 
@@ -171,7 +183,7 @@ void CPlayScene::Load()
 		string line(str);
 
 		if (line[0] == '#') continue;	// skip comment lines	
-
+		if (line == "[BACKGROUND_COLOR]") { section = SCENE_SECTION_BACKGROUND_COLOR; continue; }
 		if (line == "[TEXTURES]") { section = SCENE_SECTION_TEXTURES; continue; }
 		if (line == "[SPRITES]") {
 			section = SCENE_SECTION_SPRITES; continue;
@@ -189,6 +201,7 @@ void CPlayScene::Load()
 		//
 		switch (section)
 		{
+		case SCENE_SECTION_BACKGROUND_COLOR: _ParseSection_BACKGROUND_COLOR(line); break;
 		case SCENE_SECTION_TEXTURES: _ParseSection_TEXTURES(line); break;
 		case SCENE_SECTION_SPRITES: _ParseSection_SPRITES(line); break;
 		case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
@@ -232,7 +245,7 @@ void CPlayScene::Update(DWORD dt)
 	camPos.x -= game->GetScreenWidth() / 2;
 	camPos.y -= game->GetScreenHeight() / 2;
 
-	CGame::GetInstance()->SetCamPos(camPos);
+	game->SetCamPos(camPos);
 }
 
 void CPlayScene::Render()
@@ -241,13 +254,6 @@ void CPlayScene::Render()
 	{
 		objects[i]->Render();
 		/*objects[i]->RenderBoundingBox();*/
-	}
-
-	for (int i = 0; i < grid->m_cells.size(); i++)
-	{
-		int x = i % grid->m_numXCells;
-		int y = i / grid->m_numXCells;
-		grid->RenderBoundingBox(x, y);
 	}
 }
 

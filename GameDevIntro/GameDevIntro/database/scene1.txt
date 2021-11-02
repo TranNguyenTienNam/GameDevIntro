@@ -1,3 +1,6 @@
+[BACKGROUND_COLOR]
+190	237	243
+
 # id	file_path	transparent_color_r	g	b
 [TEXTURES]
 tex-mario	textures\mario.png	255	255	255
@@ -49,90 +52,86 @@ ani-brick	spr-brick-0	100	spr-brick-1	100	spr-brick-2	100	spr-brick-3	100	spr-br
 
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba
 # MARIO
-0	250.0	0	1
+obj-mario	250.0	0	1
 
 # BRICK 
 # --- platform (hint: I created the list using Excel!) ----
-1	0	150	2
-1	16	150	2
-1	32	150	2
-1	48	150	2
-1	64	150	2
-1	80	150	2
-1	96	150	2
-1	112	150	2
-1	128	150	2
-1	144	150	2
-1	160	150	2
-1	176	150	2
-1	192	150	2
-1	208	150	2
-1	224	150	2
-1	240	150	2
-1	256	150	2
-1	272	150	2
-1	288	150	2
-1	304	150	2
-1	320	150	2
-1	336	150	2
-1	352	150	2
-1	368	150	2
-1	384	150	2
-1	400	150	2
-1	416	150	2
-1	432	150	2
-1	448	150	2
-1	464	150	2
-1	480	150	2
-1	496	150	2
-1	512	150	2
-1	528	150	2
-1	544	150	2
-1	560	150	2
-1	576	150	2
-1	592	150	2
-1	608	150	2
-1	624	150	2
-1	640	150	2
-1	656	150	2
-1	672	150	2
-1	688	150	2
-1	704	150	2
-1	720	150	2
-1	736	150	2
-1	752	150	2
-1	768	150	2
-1	784	150	2
-1	800	150	2
-1	816	150	2
-1	832	150	2
-1	848	150	2
-1	864	150	2
-1	880	150	2
-1	896	150	2
-1	912	150	2
+obj-brick	0	150	2
+obj-brick	16	150	2
+obj-brick	32	150	2
+obj-brick	48	150	2
+obj-brick	64	150	2
+obj-brick	80	150	2
+obj-brick	96	150	2
+obj-brick	112	150	2
+obj-brick	128	150	2
+obj-brick	144	150	2
+obj-brick	160	150	2
+obj-brick	176	150	2
+obj-brick	192	150	2
+obj-brick	208	150	2
+obj-brick	224	150	2
+obj-brick	240	150	2
+obj-brick	256	150	2
+obj-brick	272	150	2
+obj-brick	288	150	2
+obj-brick	304	150	2
+obj-brick	320	150	2
+obj-brick	336	150	2
+obj-brick	352	150	2
+obj-brick	368	150	2
+obj-brick	384	150	2
+obj-brick	400	150	2
+obj-brick	416	150	2
+obj-brick	432	150	2
+obj-brick	448	150	2
+obj-brick	464	150	2
+obj-brick	480	150	2
+obj-brick	496	150	2
+obj-brick	512	150	2
+obj-brick	528	150	2
+obj-brick	544	150	2
+obj-brick	560	150	2
+obj-brick	576	150	2
+obj-brick	592	150	2
+obj-brick	608	150	2
+obj-brick	624	150	2
+obj-brick	640	150	2
+obj-brick	656	150	2
+obj-brick	672	150	2
+obj-brick	688	150	2
+obj-brick	704	150	2
+obj-brick	720	150	2
+obj-brick	736	150	2
+obj-brick	752	150	2
+obj-brick	768	150	2
+obj-brick	784	150	2
+obj-brick	800	150	2
+obj-brick	816	150	2
+obj-brick	832	150	2
+obj-brick	848	150	2
+obj-brick	864	150	2
+obj-brick	880	150	2
+obj-brick	896	150	2
+obj-brick	912	150	2
 
 # ---- brick group 1 ----
-1	100	74	2
-1	100	90	22
-1	84	90	22
+obj-brick	100	74	2
+obj-brick	100	90	22
+obj-brick	84	90	22
 
 # ---- brick group 2 ----
-1	160	74	2
-1	160	90	22
-1	144	90	22
+obj-brick	160	74	2
+obj-brick	160	90	22
+obj-brick	144	90	22
 
 # ---- brick group 3 ----
-1	220	74	2
-1	220	90	22
-1	204	90	22
+obj-brick	220	74	2
+obj-brick	220	90	22
+obj-brick	204	90	22
 
 # --- SCENE PORTAL ----
 # type	x	y	w	h	scene_id
-50	350	130	50	20	1
-#50	300	70	20	20	1
-#50	300	90	20	20	1
-#50	280	90	20	20	1
+obj-portal	350	130	300	20	1
 

@@ -10,8 +10,6 @@
 #include "Transform.h"
 #include "Scene.h"
 
-#define BACKGROUND_COLOR D3DCOLOR_XRGB(0, 0, 0)
-
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
 
@@ -38,6 +36,8 @@ class CGame : public CServiceLocator
 	int screen_width;
 	int screen_height;
 
+	D3DCOLOR background_color;
+
 	Vector2 cam_pos;
 
 public:
@@ -55,6 +55,7 @@ public:
 	int GetScreenWidth() { return screen_width; }
 	int GetScreenHeight() { return screen_height; }
 
+	void SetBackgroundColor(D3DCOLOR background) { this->background_color = background; }
 	void SetCamPos(Vector2 cam_pos) { this->cam_pos = cam_pos; }
 
 	void Update(DWORD dt);

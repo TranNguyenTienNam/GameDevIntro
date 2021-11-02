@@ -122,7 +122,7 @@ void CGame::Render()
 	if (d3ddv->BeginScene() == D3D_OK)
 	{
 		// Clear the whole window with a color
-		d3ddv->ColorFill(GetBackBuffer(), NULL, BACKGROUND_COLOR);
+		d3ddv->ColorFill(GetBackBuffer(), NULL, background_color);
 
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 

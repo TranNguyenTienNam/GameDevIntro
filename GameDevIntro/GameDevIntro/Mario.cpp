@@ -79,7 +79,6 @@ void CMario::OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionE
 
 		if (dynamic_cast<CPortal*>(e->obj))
 		{
-			DebugOut(L"Collide with portal\n");
 			auto p = dynamic_cast<CPortal*>(e->obj);
 			CGame::GetInstance()->GetService<CScenes>()->SwitchScene(p->GetSceneId());
 			return;

@@ -193,7 +193,7 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 	this->dx = velocity.x * dt;
 	this->dy = velocity.y * dt;
 
-	velocity.y += 0.0026f * dt; // [WARNING] need to adjust gravity by mass
+	velocity.y += 0.0026f * dt; // TODO: Need to adjust gravity by mass
 	object->SetSpeed(velocity);
 
 	coEvents.clear();
@@ -204,7 +204,7 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 	{
 		pos.x += dx;
 		pos.y += dy;
-		if (pos.y > 300) pos.y = 300;
+		if (pos.y > 300) pos.y = 300; // TODO: Limit fall
 		object->SetPosition(pos);
 	}
 	else
@@ -214,16 +214,22 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-		// block if isTrigger false
-		pos.x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		pos.y += min_ty * dy + ny * 0.4f;
-		object->SetPosition(pos);
+		if (!isTrigger)
+		{
+			// push out a bit to avoid overlapping next frame 
+			pos.x += min_tx * dx + nx * 0.4f;		
+			pos.y += min_ty * dy + ny * 0.4f;
+			object->SetPosition(pos);
 
-		if (nx != 0) velocity.x = 0;
-		if (ny != 0) velocity.y = 0;
-		object->SetSpeed(velocity);
+			// TODO: Upgrade if game has more physics material
+			if (nx != 0) velocity.x = 0;
+			if (ny != 0) velocity.y = 0;
+			object->SetSpeed(velocity);
+		}
 
-		if (nx != 0 || ny != 0) object->OnCollisionEnter(this, coEventsResult);
+		if (nx != 0 || ny != 0)
+			if (!isTrigger) object->OnCollisionEnter(this, coEventsResult);
+			else object->OnTriggerEnter(this, coEventsResult);
 	}
 
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];

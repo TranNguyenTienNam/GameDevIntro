@@ -20,6 +20,7 @@ protected:
 	std::vector<CGameObject*> objects;
 	std::unique_ptr<CGrid> grid;			// Grid for space partitioning for collision
 
+	void _ParseSection_BACKGROUND_COLOR(std::string line);
 	void _ParseSection_TEXTURES(std::string line);
 	void _ParseSection_SPRITES(std::string line);
 	void _ParseSection_ANIMATIONS(std::string line);
