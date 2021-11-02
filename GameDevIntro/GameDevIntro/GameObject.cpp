@@ -37,10 +37,10 @@ void CGameObject::RenderBoundingBox()
 	LPDIRECT3DTEXTURE9 bbox = CGame::GetInstance()->GetService<CTextures>()->Get("tex-bbox");
 
 	RectF rect;
-	rect.left = collider->GetBoundingBox().left;
-	rect.top = collider->GetBoundingBox().top;
-	rect.right = collider->GetBoundingBox().right;
-	rect.bottom = collider->GetBoundingBox().bottom;
+	rect.left = 0;
+	rect.top = 0;
+	rect.right = collider->GetBoundingBox().right - collider->GetBoundingBox().left;
+	rect.bottom = collider->GetBoundingBox().top - collider->GetBoundingBox().bottom;
 
-	CGame::GetInstance()->Draw(p, bbox, rect.left, rect.top, rect.right, rect.bottom, 255);
+	CGame::GetInstance()->Draw(p, bbox, rect.left, rect.top, rect.right, rect.bottom, 100);
 }

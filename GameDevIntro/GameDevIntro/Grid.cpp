@@ -84,7 +84,7 @@ void CGrid::RenderBoundingBox(int x, int y)
 	rect.left = 0;
 	rect.top = 0;
 	rect.right = m_cellSize - 0.5;
-	rect.bottom = m_cellSize - 0.5;
+	rect.bottom = - m_cellSize + 0.5;
 
 	CGame::GetInstance()->Draw(p, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
 }

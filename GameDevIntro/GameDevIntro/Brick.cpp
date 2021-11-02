@@ -28,6 +28,6 @@ void CBrick::UpdateBoundingBox()
 	boundingBox.left = transform.position.x;
 	boundingBox.top = transform.position.y;
 	boundingBox.right = transform.position.x + BRICK_WIDTH;
-	boundingBox.bottom = transform.position.y + BRICK_WIDTH;
+	boundingBox.bottom = transform.position.y - BRICK_WIDTH;
 	collider->SetBoundingBox(boundingBox);
 }

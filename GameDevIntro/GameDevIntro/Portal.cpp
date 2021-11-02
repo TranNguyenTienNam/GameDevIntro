@@ -27,7 +27,7 @@ void CPortal::Render()
 	rect.left = 0;
 	rect.top = 0;
 	rect.right = boundingBox.right - boundingBox.left;
-	rect.bottom = boundingBox.bottom - boundingBox.top;
+	rect.bottom = boundingBox.top - boundingBox.bottom;
 
 	CGame::GetInstance()->Draw(p, bbox, rect.left, rect.top, rect.right, rect.bottom, 255);
 }
@@ -38,6 +38,6 @@ void CPortal::UpdateBoundingBox()
 	boundingBox.left = transform.position.x;
 	boundingBox.top = transform.position.y;
 	boundingBox.right = transform.position.x + width;
-	boundingBox.bottom = transform.position.y + height;
+	boundingBox.bottom = transform.position.y - height;
 	collider->SetBoundingBox(boundingBox);
 }

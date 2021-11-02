@@ -23,9 +23,9 @@ void CCollider2D::SweptAABB(
 
 	RectF rBroadPhase;
 	rBroadPhase.left = dx > 0 ? movingRect.left : movingRect.left + dx;
-	rBroadPhase.top = dy > 0 ? movingRect.top : movingRect.top + dy;
+	rBroadPhase.top = dy > 0 ? movingRect.top + dy: movingRect.top;
 	rBroadPhase.right = dx > 0 ? movingRect.right + dx : movingRect.right;
-	rBroadPhase.bottom = dy > 0 ? movingRect.bottom + dy : movingRect.bottom;
+	rBroadPhase.bottom = dy > 0 ? movingRect.bottom : movingRect.bottom + dy;
 
 	if (!rBroadPhase.Overlap(staticRect)) return;
 
@@ -44,13 +44,13 @@ void CCollider2D::SweptAABB(
 
 	if (dy > 0)
 	{
-		dy_entry = staticRect.top - movingRect.bottom;
-		dy_exit = staticRect.bottom - movingRect.top;
+		dy_entry = staticRect.bottom - movingRect.top;
+		dy_exit = staticRect.top - movingRect.bottom;
 	}
 	else if (dy < 0)
 	{
-		dy_entry = staticRect.bottom - movingRect.top;
-		dy_exit = staticRect.top - movingRect.bottom;
+		dy_entry = staticRect.top - movingRect.bottom;
+		dy_exit = staticRect.bottom - movingRect.top;
 	}
 
 	if (dx == 0)
@@ -193,7 +193,7 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 	this->dx = velocity.x * dt;
 	this->dy = velocity.y * dt;
 
-	velocity.y += 0.0026f * dt; // TODO: Need to adjust gravity by mass
+	velocity.y -= 0.0026f * dt; // TODO: Need to adjust gravity by mass
 	object->SetVelocity(velocity);
 
 	coEvents.clear();
@@ -204,7 +204,7 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 	{
 		pos.x += dx;
 		pos.y += dy;
-		if (pos.y > 300) pos.y = 300; // TODO: Limit fall
+		if (pos.y < 0) pos.y = 0; // TODO: Limit fall
 		object->SetPosition(pos);
 	}
 	else

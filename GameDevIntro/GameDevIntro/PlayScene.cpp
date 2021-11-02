@@ -220,10 +220,10 @@ void CPlayScene::Update(DWORD dt)
 {
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		/*std::vector<CGameObject*> coObjects = grid->GetPotentialObjects(objects[i]);*/
+		std::vector<CGameObject*> coObjects = grid->GetPotentialObjects(objects[i]);
 
 		objects[i]->UpdateBoundingBox();
-		objects[i]->PhysicsUpdate(&objects);
+		objects[i]->PhysicsUpdate(&coObjects);
 		objects[i]->Update(dt);
 
 		// Check to see if the game object moved
@@ -243,7 +243,7 @@ void CPlayScene::Update(DWORD dt)
 
 	CGame* game = CGame::GetInstance();
 	camPos.x -= game->GetScreenWidth() / 2;
-	camPos.y -= game->GetScreenHeight() / 2;
+	camPos.y += game->GetScreenHeight() / 2;
 
 	game->SetCamPos(camPos);
 }
@@ -253,7 +253,14 @@ void CPlayScene::Render()
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Render();
-		/*objects[i]->RenderBoundingBox();*/
+		objects[i]->RenderBoundingBox();
+	}
+
+	for (int i= 0; i < grid->m_cells.size(); i++)
+	{
+		int x = i % grid->m_numXCells;
+		int y = i / grid->m_numXCells;
+		grid->RenderBoundingBox(x, y);
 	}
 }
 

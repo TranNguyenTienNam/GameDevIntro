@@ -54,7 +54,7 @@ void CMario::SetState(int state)
 		nx = -1;
 		break;
 	case MARIO_STATE_JUMP:
-		velocity.y = -MARIO_JUMP_SPEED_Y * 1.2;
+		velocity.y = MARIO_JUMP_SPEED_Y * 1.2;
 	case MARIO_STATE_IDLE:
 		velocity.x = 0;
 		break;
@@ -67,7 +67,7 @@ void CMario::UpdateBoundingBox()
 	boundingBox.left = transform.position.x;
 	boundingBox.top = transform.position.y;
 	boundingBox.right = transform.position.x + MARIO_WIDTH;
-	boundingBox.bottom = transform.position.y + MARIO_HEIGHT;
+	boundingBox.bottom = transform.position.y - MARIO_HEIGHT;
 	collider->SetBoundingBox(boundingBox);
 }
 

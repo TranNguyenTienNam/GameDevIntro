@@ -71,7 +71,7 @@ void CGame::InitDirectX(HWND hWnd)
 
 void CGame::Draw(Vector2 position, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha)
 {
-	Vector3 p(floor(position.x - cam_pos.x), floor(position.y - cam_pos.y), 0);
+	Vector3 p(floor(position.x - cam_pos.x), floor(-position.y + cam_pos.y), 0);
 	RECT r;
 	r.left = left;
 	r.top = top;

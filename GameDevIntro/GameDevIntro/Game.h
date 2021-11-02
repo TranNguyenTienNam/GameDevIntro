@@ -10,8 +10,8 @@
 #include "Transform.h"
 #include "Scene.h"
 
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
 
 #define MISC_TEXTURE_PATH L"textures/misc.png"
 #define MARIO_TEXTURE_PATH L"textures/mario.png"

@@ -19,7 +19,7 @@ bool RectF::Overlap(const RectF& other)
 {
 	if (this->right <= other.left || this->left >= other.right)
 		return false;
-	if (this->top >= other.bottom || this->bottom <= other.top)
+	if (this->top <= other.bottom || this->bottom >= other.top)
 		return false;
 	return true;
 }
@@ -27,15 +27,15 @@ bool RectF::Overlap(const RectF& other)
 bool RectF::Contain(const RectF& other)
 {
 	return this->left <= other.left &&
-		this->top <= other.top &&
+		this->top >= other.top &&
 		this->right >= other.right &&
-		this->bottom >= other.bottom;
+		this->bottom <= other.bottom;
 }
 
 bool RectF::Contain(const Vector2& point)
 {
 	return this->left <= point.x &&
-		this->top <= point.y &&
+		this->top >= point.y &&
 		this->right >= point.x &&
-		this->bottom >= point.y;
+		this->bottom <= point.y;
 }
