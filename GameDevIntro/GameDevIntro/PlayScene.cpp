@@ -220,10 +220,10 @@ void CPlayScene::Update(DWORD dt)
 {
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		std::vector<CGameObject*> coObjects = grid->GetPotentialObjects(objects[i]);
+		/*std::vector<CGameObject*> coObjects = grid->GetPotentialObjects(objects[i]);*/
 
 		objects[i]->UpdateBoundingBox();
-		objects[i]->PhysicsUpdate(&coObjects);
+		objects[i]->PhysicsUpdate(&objects);
 		objects[i]->Update(dt);
 
 		// Check to see if the game object moved

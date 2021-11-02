@@ -108,8 +108,8 @@ LPCOLLISIONEVENT CCollider2D::SweptAABBEx(CGameObject* coO)
 	staticRect = coO->GetCollider()->GetBoundingBox();
 
 	// deal with moving object: m speed = original m speed - collide object speed
-	float sdx = coO->GetSpeed().x * CGame::GetDeltaTime();
-	float sdy = coO->GetSpeed().y * CGame::GetDeltaTime();
+	float sdx = coO->GetVelocity().x * CGame::GetDeltaTime();
+	float sdy = coO->GetVelocity().y * CGame::GetDeltaTime();
 
 	// (rdx, rdy) is RELATIVE movement distance/velocity 
 	float rdx = this->dx - sdx;
@@ -189,12 +189,12 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 
 	auto dt = CGame::GetDeltaTime();
 	auto pos = object->GetPosition();
-	auto velocity = object->GetSpeed();
+	auto velocity = object->GetVelocity();
 	this->dx = velocity.x * dt;
 	this->dy = velocity.y * dt;
 
 	velocity.y += 0.0026f * dt; // TODO: Need to adjust gravity by mass
-	object->SetSpeed(velocity);
+	object->SetVelocity(velocity);
 
 	coEvents.clear();
 
@@ -224,7 +224,7 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 			// TODO: Upgrade if game has more physics material
 			if (nx != 0) velocity.x = 0;
 			if (ny != 0) velocity.y = 0;
-			object->SetSpeed(velocity);
+			object->SetVelocity(velocity);
 		}
 
 		if (nx != 0 || ny != 0)

@@ -31,8 +31,8 @@ public:
 
 	void SetPosition(Vector2 pos) { this->transform.position = pos; }
 	Vector2 GetPosition() { return this->transform.position; }
-	void SetSpeed(Vector2 v) { this->velocity = v; }
-	Vector2 GetSpeed() { return this->velocity; }
+	void SetVelocity(Vector2 v) { this->velocity = v; }
+	Vector2 GetVelocity() { return this->velocity; }
 	int GetState() { return this->state; }
 	void SetState(int state) { this->state = state; }
 
