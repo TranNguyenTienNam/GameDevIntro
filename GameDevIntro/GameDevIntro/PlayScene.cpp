@@ -167,6 +167,8 @@ void CPlayScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
 
+	mainCam = new CCamera();
+
 	int screenWidth = CGame::GetInstance()->GetScreenWidth();
 	int screenHeight = CGame::GetInstance()->GetScreenHeight();
 	grid = std::make_unique<CGrid>(screenWidth * 10, screenHeight * 3, CELL_SIZE);
@@ -212,49 +214,88 @@ void CPlayScene::Load()
 	f.close();
 
 	CGame::GetInstance()->GetService<CTextures>()->Add("tex-bbox", L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
+	CGame::GetInstance()->GetService<CTextures>()->Add("tex-green-bbox", L"textures\\green-bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
+
+	DebugOut(L"[LOAD] Num of potential objects: %d\n", potentials.size());
+}
+
+void CPlayScene::PreUpdate()
+{
+	mainCam->UpdateCamPos(player->GetPosition());
+	mainCam->UpdateBoundingBox();
+	RectF bbCam = mainCam->GetBoundingBox();
+	grid->SetActiveCells(bbCam);
+
+	UpdatePotentialObjects();
+}
+
+void CPlayScene::UpdatePotentialObjects()
+{
+	potentials.clear();
+
+	for (auto cell : grid->m_activeCells)
+	{
+		for (auto obj : cell->gameObjects)
+			potentials.push_back(obj);
+	}
+
+	for (auto obj : potentials)
+	{
+		Cell* newCell = grid->GetCell(obj->GetPosition());
+		if (newCell != nullptr && newCell != obj->GetCell())
+		{
+			grid->RemoveGameObjectFromCell(obj);
+			grid->AddGameObject(obj, newCell);
+		}
+	}
+	DebugOut(L"Num of potential objects: %d\n", potentials.size());
 }
 
 void CPlayScene::Update(DWORD dt)
 {
-	for (size_t i = 0; i < objects.size(); i++)
-	{
-		std::vector<CGameObject*> coObjects = grid->GetPotentialObjects(objects[i]);
+	for (auto obj : potentials)
+		obj->UpdateBoundingBox();
 
-		objects[i]->UpdateBoundingBox();
-		objects[i]->PhysicsUpdate(&coObjects);
-		objects[i]->Update(dt);
+	for (auto obj : potentials)
+		obj->PhysicsUpdate(&potentials);
+	
+	for (auto obj : potentials)
+		obj->Update(dt);
 
-		// Check to see if the game object moved
-		Cell* newCell = grid->GetCell(objects[i]->GetPosition());
-		if (newCell != nullptr && newCell != objects[i]->GetCell())
-		{
-			grid->RemoveGameObjectFromCell(objects[i]);
-			grid->AddGameObject(objects[i], newCell);
-		}
-	}
+	//for (size_t i = 0; i < potentials.size(); i++)
+	//{
+	//	potentials[i]->UpdateBoundingBox();
+	//	potentials[i]->PhysicsUpdate(&potentials);
+	//	potentials[i]->Update(dt);
+
+	//	// Check to see if the game object moved
+	//	Cell* newCell = grid->GetCell(potentials[i]->GetPosition());
+	//	if (newCell != nullptr && newCell != potentials[i]->GetCell())
+	//	{
+	//		grid->RemoveGameObjectFromCell(potentials[i]);
+	//		grid->AddGameObject(potentials[i], newCell);
+	//	}
+	//}
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
-
-	// Update camera to follow mario
-	Vector2 camPos = player->GetPosition();
-
-	CGame* game = CGame::GetInstance();
-	camPos.x -= game->GetScreenWidth() / 2;
-	camPos.y += game->GetScreenHeight() / 2;
-
-	game->SetCamPos(camPos);
 }
 
 void CPlayScene::Render()
 {
-	for (int i = 0; i < objects.size(); i++)
+	for (auto obj : potentials)
+		obj->Render();
+
+	for (auto obj : potentials)
+		obj->RenderBoundingBox();
+
+	/*for (int i = 0; i < potentials.size(); i++)
 	{
-		objects[i]->Render();
-		objects[i]->RenderBoundingBox();
-	}
+		potentials[i]->Render();
+		potentials[i]->RenderBoundingBox();
+	}*/
 
 	for (int i= 0; i < grid->m_cells.size(); i++)
 	{
@@ -262,6 +303,8 @@ void CPlayScene::Render()
 		int y = i / grid->m_numXCells;
 		grid->RenderBoundingBox(x, y);
 	}
+
+	mainCam->RenderBoundingBox();
 }
 
 /*
@@ -269,9 +312,9 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	for (int i = 0; i < objects.size(); i++)
-		delete objects[i];
+	for (auto obj : objects) delete obj;
 	objects.clear();
+
 	player = NULL;
 	grid.reset();
 

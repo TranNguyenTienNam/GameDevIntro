@@ -10,6 +10,8 @@ void CBrick::InitAnimations()
 CBrick::CBrick() :CGameObject()
 {
 	InitAnimations();
+	collider = new CCollider2D;
+	collider->SetGameObject(this);
 }
 
 void CBrick::Update(DWORD dt)

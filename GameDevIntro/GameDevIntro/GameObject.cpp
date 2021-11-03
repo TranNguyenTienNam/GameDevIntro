@@ -4,7 +4,6 @@ CGameObject::CGameObject()
 {
 	transform.position = VectorZero();
 	velocity = VectorZero();
-	this->collider = new CCollider2D;
 }
 
 CGameObject::~CGameObject()

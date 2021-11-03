@@ -37,6 +37,9 @@
     <Filter Include="Framework\Space partition">
       <UniqueIdentifier>{d1021361-6534-4080-b8e6-af4b0580a91a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Camera">
+      <UniqueIdentifier>{d760948c-6c86-46cc-a353-17b4d1234b8f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mario.h">
@@ -102,6 +105,9 @@
     <ClInclude Include="Grid.h">
       <Filter>Framework\Space partition</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Framework\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -163,6 +169,9 @@
     </ClCompile>
     <ClCompile Include="Grid.cpp">
       <Filter>Framework\Space partition</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Framework\Camera</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -190,6 +190,8 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 	auto dt = CGame::GetDeltaTime();
 	auto pos = object->GetPosition();
 	auto velocity = object->GetVelocity();
+
+	// TODO: Change uniform motion into uniformly accelerated motion
 	this->dx = velocity.x * dt;
 	this->dy = velocity.y * dt;
 

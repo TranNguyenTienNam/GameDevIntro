@@ -38,8 +38,6 @@ class CGame : public CServiceLocator
 
 	D3DCOLOR background_color;
 
-	Vector2 cam_pos;
-
 public:
 	static CGame* GetInstance();
 	static DWORD GetDeltaTime() { return deltaTime; }
@@ -56,7 +54,6 @@ public:
 	int GetScreenHeight() { return screen_height; }
 
 	void SetBackgroundColor(D3DCOLOR background) { this->background_color = background; }
-	void SetCamPos(Vector2 cam_pos) { this->cam_pos = cam_pos; }
 
 	void Update(DWORD dt);
 	void Render();

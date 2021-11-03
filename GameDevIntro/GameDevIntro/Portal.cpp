@@ -7,6 +7,7 @@ CPortal::CPortal(float l, float t, float w, float h, int scene_id)
 	transform.position.y = t;
 	width = w;
 	height = h;
+	collider = new CCollider2D;
 	GetCollider()->SetGameObject(this);
 }
 

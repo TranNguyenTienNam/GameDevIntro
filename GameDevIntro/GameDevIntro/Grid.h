@@ -3,6 +3,7 @@
 
 struct Cell
 {
+	bool isActive = false;
 	std::vector<CGameObject*> gameObjects;
 };
 
@@ -20,9 +21,10 @@ public:
 	void RemoveGameObjectFromCell(CGameObject* gameObject);
 
 	void RenderBoundingBox(int x, int y);
-	std::vector<CGameObject*> GetPotentialObjects(CGameObject* object);
+	void SetActiveCells(RectF rect);
 private:
 	std::vector<Cell> m_cells;
+	std::vector<Cell*> m_activeCells;
 	int m_cellSize;
 	int m_width;
 	int m_height;

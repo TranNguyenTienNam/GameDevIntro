@@ -8,6 +8,7 @@
 #include "InputHandler.h"
 #include "Mario.h"
 #include "Grid.h"
+#include "Camera.h"
 
 const int CELL_SIZE = 128;
 
@@ -18,7 +19,9 @@ class CPlayScene : public CScene
 protected:
 	CMario* player;							// A play scene has to have player, right? 
 	std::vector<CGameObject*> objects;
+	std::vector<CGameObject*> potentials;
 	std::unique_ptr<CGrid> grid;			// Grid for space partitioning for collision
+	CCamera* mainCam;
 
 	void _ParseSection_BACKGROUND_COLOR(std::string line);
 	void _ParseSection_TEXTURES(std::string line);
@@ -30,14 +33,16 @@ protected:
 public:
 	CPlayScene(int id, LPCWSTR filePath);
 	~CPlayScene();
-	std::vector<CGameObject*> GetGameObjects() { return objects; }
 
 	virtual void Load();
+	virtual void PreUpdate();
+	virtual void UpdatePotentialObjects();
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
 
 	CMario* GetPlayer() { return player; }
+	CCamera* GetCamera() { return mainCam; }
 
 	//friend class CPlayScenceKeyHandler;
 };

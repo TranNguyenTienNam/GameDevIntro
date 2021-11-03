@@ -26,6 +26,8 @@ protected:
 
 public:
 	CMario();
+	~CMario();
+
 	void Update(DWORD dt);
 	void Render();
 	void SetState(int state);

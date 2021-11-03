@@ -21,7 +21,7 @@ protected:
 	int nx;
 	int state;
 	CCollider2D* collider;
-	Cell* ownerCell = nullptr;
+	Cell* ownerCell;
 	int cellVectorIndex = -1;
 	std::unordered_map<std::string, LPANIMATION> animations;
 

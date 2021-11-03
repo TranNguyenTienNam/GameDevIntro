@@ -5,6 +5,7 @@
 #include "PlayScene.h"
 #include "Scenes.h"
 #include "Portal.h"
+#include "Brick.h"
 
 void CMario::InitAnimations()
 {
@@ -18,8 +19,13 @@ void CMario::InitAnimations()
 CMario::CMario() :CGameObject()
 {
 	InitAnimations();
+	collider = new CCollider2D;
 	collider->SetGameObject(this);
 	collider->SetDynamic();
+}
+
+CMario::~CMario()
+{
 }
 
 void CMario::Update(DWORD dt)

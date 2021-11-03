@@ -3,6 +3,7 @@
 #include "Utils.h"
 #include "InputHandler.h"
 #include "Scenes.h"
+#include "PlayScene.h"
 
 CGame* CGame::instance = NULL;
 DWORD CGame::deltaTime = 0;
@@ -71,6 +72,7 @@ void CGame::InitDirectX(HWND hWnd)
 
 void CGame::Draw(Vector2 position, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha)
 {
+	Vector2 cam_pos = ((CPlayScene*)GetService<CScenes>()->GetCurrentScene())->GetCamera()->GetCamPos();
 	Vector3 p(floor(position.x - cam_pos.x), floor(-position.y + cam_pos.y), 0);
 	RECT r;
 	r.left = left;
@@ -178,6 +180,8 @@ void CGame::GameRun()
 		if (deltaTime >= tickPerFrame)
 		{
 			frameStart = now;
+
+			CGame::GetInstance()->GetService<CScenes>()->GetCurrentScene()->PreUpdate();
 
 			CGame::GetInstance()->GetService<CInputHandler>()->ProcessKeyboard();
 

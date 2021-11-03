@@ -55,6 +55,7 @@ Vector2 CGrid::GetCellCoord(const Vector2& pos)
 {
 	int cellX = (int)(pos.x / m_cellSize);
 	int cellY = (int)(pos.y / m_cellSize);
+
 	return Vector2(cellX, cellY);
 }
 
@@ -79,66 +80,50 @@ void CGrid::RenderBoundingBox(int x, int y)
 	D3DXVECTOR2 p(x * m_cellSize, y * m_cellSize);
 
 	LPDIRECT3DTEXTURE9 bbox = CGame::GetInstance()->GetService<CTextures>()->Get("tex-bbox");
+	LPDIRECT3DTEXTURE9 green_bbox = CGame::GetInstance()->GetService<CTextures>()->Get("tex-green-bbox");
 
 	RectF rect;
 	rect.left = 0;
-	rect.top = 0;
+	rect.top = m_cellSize - 0.5;
 	rect.right = m_cellSize - 0.5;
-	rect.bottom = - m_cellSize + 0.5;
+	rect.bottom = 0;
 
-	CGame::GetInstance()->Draw(p, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+	if (GetCell(x,y)->isActive)
+		CGame::GetInstance()->Draw(p, green_bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+	else CGame::GetInstance()->Draw(p, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
 }
 
-std::vector<CGameObject*> CGrid::GetPotentialObjects(CGameObject* object)
+void CGrid::SetActiveCells(RectF rect)
 {
-	Vector2 coord = GetCellCoord(object->GetPosition());
-	int x = coord.x;
-	int y = coord.y;
+	m_activeCells.clear();
 
-	std::vector<CGameObject*> coObjects = object->GetCell()->gameObjects;
-	std::vector<CGameObject*> tail;
+	// Unshow all cells
+	for (int i = 0; i < m_cells.size(); i++)
+	{
+		int x = i % m_numXCells;
+		int y = i / m_numXCells;
+		GetCell(x, y)->isActive = false;
+	}
 
-	if (x > 0)
-	{
-		tail = GetCell(x - 1, y)->gameObjects;
-		coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-		if (y > 0)
-		{
-			tail = GetCell(x - 1, y - 1)->gameObjects;
-			coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-		}
-		if (y < m_numYCells - 1)
-		{
-			tail = GetCell(x - 1, y + 1)->gameObjects;
-			coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-		}
-	}
-	if (x < m_numXCells - 1)
-	{
-		tail = GetCell(x + 1, y)->gameObjects;
-		coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-		if (y > 0)
-		{
-			tail = GetCell(x + 1, y - 1)->gameObjects;
-			coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-		}
-		if (y < m_numYCells - 1)
-		{
-			tail = GetCell(x + 1, y + 1)->gameObjects;
-			coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-		}
-	}
-	if (y > 0)
-	{
-		tail = GetCell(x, y - 1)->gameObjects;
-		coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-	}
-	if (y < m_numYCells - 1)
-	{
-		tail = GetCell(x, y + 1)->gameObjects;
-		coObjects.insert(coObjects.end(), tail.begin(), tail.end());
-	}
+	int startX = floor(rect.left / m_cellSize);
+	int endX = floor(rect.right / m_cellSize);
+	int startY = floor(rect.bottom / m_cellSize);
+	int endY = floor(rect.top / m_cellSize);
 	
-	return coObjects;
-}
+	//DebugOut(L"SetActiveCells %d %d %d %d\n", startX, endX, startY, endY);
+	//DebugOut(L"Result:\t");
+	for (int x = startX; x <= endX; x++)
+	{
+		if (x < 0 || x >= m_numXCells) continue;
+		for (int y = startY; y <= endY; y++)
+		{
+			if (y < 0 || y >= m_numYCells) continue;
+			GetCell(x, y)->isActive = true;
+			m_activeCells.push_back(GetCell(x, y));
+			/*DebugOut(L"Cell(%d, %d)\t", x, y);*/
+		}
+	}
 
+	DebugOut(L"Num of active cells: %d\n", m_activeCells.size());
+	/*DebugOut(L"\n");*/
+}

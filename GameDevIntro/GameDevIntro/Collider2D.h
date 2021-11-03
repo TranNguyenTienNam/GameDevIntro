@@ -52,5 +52,4 @@ public:
 	void SetBoundingBox(const RectF& boundingBox) { this->boundingBox = boundingBox; }
 
 	void SetDynamic() { this->isDynamic = true; }
-	void SetStatic() { this->isDynamic = false; }
 };
