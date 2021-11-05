@@ -19,9 +19,14 @@ void CMario::InitAnimations()
 CMario::CMario() :CGameObject()
 {
 	InitAnimations();
-	collider = new CCollider2D;
+
+	// Init collider
+	auto collider = new CCollider2D;
 	collider->SetGameObject(this);
+	collider->SetOffset(VectorZero());
+	collider->SetBoxSize(Vector2(MARIO_WIDTH, MARIO_WIDTH));
 	collider->SetDynamic();
+	colliders.push_back(collider);
 }
 
 CMario::~CMario()
@@ -65,16 +70,6 @@ void CMario::SetState(int state)
 		velocity.x = 0;
 		break;
 	}
-}
-
-void CMario::UpdateBoundingBox()
-{
-	RectF boundingBox;
-	boundingBox.left = transform.position.x;
-	boundingBox.top = transform.position.y;
-	boundingBox.right = transform.position.x + MARIO_WIDTH;
-	boundingBox.bottom = transform.position.y - MARIO_HEIGHT;
-	collider->SetBoundingBox(boundingBox);
 }
 
 void CMario::OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions)

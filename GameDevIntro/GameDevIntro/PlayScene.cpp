@@ -169,6 +169,9 @@ void CPlayScene::Load()
 
 	// Init Camera
 	mainCam = new CCamera();
+	auto game = CGame::GetInstance();
+	mainCam->SetBoundingBoxSize(Vector2(game->GetScreenWidth() / 2, game->GetScreenHeight() / 2));
+	mainCam->SetBoundingBoxOffset(Vector2(game->GetScreenWidth() / 4, -game->GetScreenHeight() / 4));
 
 	// Init Grid
 	int screenWidth = CGame::GetInstance()->GetScreenWidth();
@@ -215,18 +218,17 @@ void CPlayScene::Load()
 
 	f.close();
 
-	CGame::GetInstance()->GetService<CTextures>()->Add("tex-bbox", L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
-	CGame::GetInstance()->GetService<CTextures>()->Add("tex-green-bbox", L"textures\\green-bbox.png", D3DCOLOR_XRGB(255, 255, 255));
+	game->GetService<CTextures>()->Add("tex-bbox", L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
+	game->GetService<CTextures>()->Add("tex-green-bbox", L"textures\\green-bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
 
 void CPlayScene::PreUpdate()
 {
-	mainCam->UpdateCamPos(player->GetPosition());
-	mainCam->UpdateBoundingBox();
-	RectF bbCam = mainCam->GetBoundingBox();
-	grid->SetActiveCells(bbCam);
+	auto game = CGame::GetInstance();
+	mainCam->Update(player->GetPosition());
+	grid->SetActiveCells(mainCam->GetBoundingBox());
 
 	UpdatePotentialObjects();
 }
@@ -255,9 +257,6 @@ void CPlayScene::UpdatePotentialObjects()
 void CPlayScene::Update(DWORD dt)
 {
 	for (auto obj : potentials)
-		if (obj->IsEnabled() == true) obj->UpdateBoundingBox();
-
-	for (auto obj : potentials)
 		if (obj->IsEnabled() == true) obj->PhysicsUpdate(&potentials);
 	
 	for (auto obj : potentials)
@@ -269,18 +268,19 @@ void CPlayScene::Render()
 	for (auto obj : potentials)
 		if (obj->IsEnabled() == true) obj->Render();
 
+	// RENDERING GIZMO
 	for (auto obj : potentials)
 		if (obj->IsEnabled() == true) obj->RenderBoundingBox();
 
-	// RENDERING GIZMO
-	/*for (int i= 0; i < grid->m_cells.size(); i++)
+
+	for (int i= 0; i < grid->m_cells.size(); i++)
 	{
 		int x = i % grid->m_numXCells;
 		int y = i / grid->m_numXCells;
 		grid->RenderBoundingBox(x, y);
 	}
 
-	mainCam->RenderBoundingBox();*/
+	mainCam->RenderBoundingBox();
 }
 
 /*

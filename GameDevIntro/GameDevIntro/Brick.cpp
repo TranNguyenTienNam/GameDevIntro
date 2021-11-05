@@ -10,8 +10,13 @@ void CBrick::InitAnimations()
 CBrick::CBrick() :CGameObject()
 {
 	InitAnimations();
-	collider = new CCollider2D;
+
+	// Init collider
+	auto collider = new CCollider2D;
 	collider->SetGameObject(this);
+	collider->SetOffset(VectorZero());
+	collider->SetBoxSize(Vector2(BRICK_WIDTH, BRICK_WIDTH));
+	colliders.push_back(collider);
 }
 
 void CBrick::Update(DWORD dt)
@@ -22,14 +27,4 @@ void CBrick::Update(DWORD dt)
 void CBrick::Render()
 {
 	animations.at("Brick")->Render(transform.position);
-}
-
-void CBrick::UpdateBoundingBox()
-{
-	RectF boundingBox;
-	boundingBox.left = transform.position.x;
-	boundingBox.top = transform.position.y;
-	boundingBox.right = transform.position.x + BRICK_WIDTH;
-	boundingBox.bottom = transform.position.y - BRICK_WIDTH;
-	collider->SetBoundingBox(boundingBox);
 }

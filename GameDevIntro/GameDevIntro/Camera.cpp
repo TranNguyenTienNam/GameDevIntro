@@ -16,43 +16,37 @@ CCamera::~CCamera()
 {
 }
 
-void CCamera::UpdateCamPos(Vector2 pos)
+RectF CCamera::GetBoundingBox()
+{
+	Vector2 posBoundingBox = position + bbOffset;
+
+	RectF boundingBox;
+	boundingBox.left = position.x + bbSize.x / 2;
+	boundingBox.top = position.y - bbSize.y / 2;
+	boundingBox.right = position.x + bbSize.x * 3/2;
+	boundingBox.bottom = position.y - bbSize.y *3/2;
+	return boundingBox;
+}
+
+void CCamera::Update(Vector2 pos)
 {
 	position = pos;
-
-	position.x -= CGame::GetInstance()->GetScreenWidth() / 2;
-	position.y += CGame::GetInstance()->GetScreenHeight() / 2;
+	position.x -= bbSize.x;
+	position.y += bbSize.y;
 	/*camPos.x = camPos.x < 0 ? 0 : camPos.x;
 	camPos.y = camPos.y < 0 ? 0 : camPos.y;*/
 }
 
-void CCamera::UpdateBoundingBox()
-{
-	auto game = CGame::GetInstance();
-	/*boundingBox.left = position.x;
-	boundingBox.top = position.y;
-	boundingBox.right = position.x + game->GetScreenWidth();
-	boundingBox.bottom = position.y - game->GetScreenHeight();*/
-
-	// Test
-	boundingBox.left = position.x + game->GetScreenWidth() / 4;
-	boundingBox.top = position.y - game->GetScreenHeight() / 4;
-	boundingBox.right = position.x + game->GetScreenWidth() * 3 / 4;
-	boundingBox.bottom = position.y - game->GetScreenHeight() * 3 / 4;
-}
-
 void CCamera::RenderBoundingBox()
 {
-	Vector2 pos;
-	pos.x = position.x + CGame::GetInstance()->GetScreenWidth() / 4;
-	pos.y = position.y - CGame::GetInstance()->GetScreenHeight() / 4;
+	Vector2 pos = position + bbOffset;
 	LPDIRECT3DTEXTURE9 blue_bbox = CGame::GetInstance()->GetService<CTextures>()->Get("tex-bbox");
 
 	RectF rect;
 	rect.left = 0;
 	rect.top = 0;
-	rect.right = boundingBox.right - boundingBox.left;
-	rect.bottom = boundingBox.top - boundingBox.bottom;
+	rect.right = bbSize.x;
+	rect.bottom = bbSize.y;
 
 	CGame::GetInstance()->Draw(pos, blue_bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
 }

@@ -15,6 +15,5 @@ public:
 	CPortal(float l, float t, float w, float h, int scene_id);
 	void Update(DWORD dt);
 	void Render();
-	void UpdateBoundingBox();
 	int GetSceneId() { return scene_id; }
 };

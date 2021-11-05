@@ -3,14 +3,19 @@
 #include "Transform.h"
 
 class CGameObject;
+class CCollider2D;
 
 struct CCollisionEvent;
 typedef CCollisionEvent* LPCOLLISIONEVENT;
 struct CCollisionEvent
 {
 	CGameObject* obj;
+	CCollider2D* co;
 	float nx, ny, t;
-	CCollisionEvent(float t, float nx, float ny, CGameObject* obj = NULL) { this->t = t; this->nx = nx; this->ny = ny; this->obj = obj; }
+	CCollisionEvent(float t, float nx, float ny, CGameObject* obj = NULL, CCollider2D* co = NULL) 
+	{
+		this->t = t; this->nx = nx; this->ny = ny; this->obj = obj; this->co = co;
+	}
 
 	static bool compare(const LPCOLLISIONEVENT& a, LPCOLLISIONEVENT& b)
 	{
@@ -31,12 +36,14 @@ protected:
 	bool isDynamic = false;
 	CGameObject* object;
 	RectF boundingBox;
+	Vector2 offset;
+	Vector2 boxSize;
 public:
 	static void SweptAABB(
 		RectF movingRect, RectF staticRect,
 		float dx, float dy, 
 		float& nx, float& ny, float& deltaTime);
-	LPCOLLISIONEVENT SweptAABBEx(CGameObject* coO);
+	LPCOLLISIONEVENT SweptAABBEx(CCollider2D* coOther);
 	void CalcPotentialCollisions(std::vector<CGameObject*>* coObjects, std::vector<LPCOLLISIONEVENT>& coEvents);
 	void FilterCollision(
 		std::vector<LPCOLLISIONEVENT>& coEvents,
@@ -48,8 +55,11 @@ public:
 	CGameObject* GetGameObject() { return this->object; }
 	void SetGameObject(CGameObject* gameObject) { this->object = gameObject; }
 
-	RectF GetBoundingBox() { return this->boundingBox; }
+	void SetOffset(Vector2 offset) { this->offset = offset; }
+	void SetBoxSize(Vector2 size) { this->boxSize = size; }
+	RectF GetBoundingBox();
 	void SetBoundingBox(const RectF& boundingBox) { this->boundingBox = boundingBox; }
+	void RenderBoundingBox();
 
 	void SetDynamic() { this->isDynamic = true; }
 };

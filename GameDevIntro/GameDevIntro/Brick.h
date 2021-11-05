@@ -12,6 +12,4 @@ public:
 	CBrick();
 	void Update(DWORD dt);
 	void Render();
-
-	void UpdateBoundingBox();
 };

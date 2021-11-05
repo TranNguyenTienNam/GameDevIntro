@@ -99,17 +99,18 @@ void CCollider2D::SweptAABB(
 /*
 	Extension of original SweptAABB to deal with two moving objects
 */
-LPCOLLISIONEVENT CCollider2D::SweptAABBEx(CGameObject* coO)
+LPCOLLISIONEVENT CCollider2D::SweptAABBEx(CCollider2D* coOther)
 {
 	RectF staticRect;		// static object bbox
 	RectF movingRect;		// moving object bbox
 	float t, nx, ny;
 
-	staticRect = coO->GetCollider()->GetBoundingBox();
+	staticRect = coOther->GetBoundingBox();
 
 	// deal with moving object: m speed = original m speed - collide object speed
-	float sdx = coO->GetVelocity().x * CGame::GetDeltaTime();
-	float sdy = coO->GetVelocity().y * CGame::GetDeltaTime();
+	auto coObject = coOther->GetGameObject();
+	float sdx = coObject->GetVelocity().x * CGame::GetDeltaTime();
+	float sdy = coObject->GetVelocity().y * CGame::GetDeltaTime();
 
 	// (rdx, rdy) is RELATIVE movement distance/velocity 
 	float rdx = this->dx - sdx;
@@ -121,7 +122,7 @@ LPCOLLISIONEVENT CCollider2D::SweptAABBEx(CGameObject* coO)
 		movingRect, staticRect,
 		rdx, rdy, nx, ny, t);
 
-	CCollisionEvent* e = new CCollisionEvent(t, nx, ny, coO);
+	CCollisionEvent* e = new CCollisionEvent(t, nx, ny, coObject, coOther);
 	return e;
 }
 
@@ -138,12 +139,15 @@ void CCollider2D::CalcPotentialCollisions(
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		if (object != coObjects->at(i)) {
-			LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+			for (auto co : coObjects->at(i)->GetColliders())
+			{
+				LPCOLLISIONEVENT e = SweptAABBEx(co);
 
-			if (e->t > 0 && e->t <= 1.0f)
-				coEvents.push_back(e);
-			else
-				delete e;
+				if (e->t > 0 && e->t <= 1.0f)
+					coEvents.push_back(e);
+				else
+					delete e;
+			}
 		}
 	}
 
@@ -235,4 +239,30 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 	}
 
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+}
+
+RectF CCollider2D::GetBoundingBox()
+{
+	Vector2 posCollider = object->GetPosition() + offset;
+	RectF boundingBox;
+	boundingBox.left = posCollider.x;
+	boundingBox.top = posCollider.y;
+	boundingBox.right = posCollider.x + boxSize.x;
+	boundingBox.bottom = posCollider.y - boxSize.y;
+	return boundingBox;
+}
+
+void CCollider2D::RenderBoundingBox()
+{
+	Vector2 posCollider = object->GetPosition() + offset;
+
+	LPDIRECT3DTEXTURE9 bbox = CGame::GetInstance()->GetService<CTextures>()->Get("tex-bbox");
+
+	RectF rect;
+	rect.left = 0;
+	rect.top = 0;
+	rect.right = boxSize.x;
+	rect.bottom = boxSize.y;
+
+	CGame::GetInstance()->Draw(posCollider, bbox, rect.left, rect.top, rect.right, rect.bottom, 100);
 }

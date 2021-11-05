@@ -110,8 +110,6 @@ void CGrid::SetActiveCells(RectF rect)
 	int startY = floor(rect.bottom / m_cellSize);
 	int endY = floor(rect.top / m_cellSize);
 	
-	//DebugOut(L"SetActiveCells %d %d %d %d\n", startX, endX, startY, endY);
-	//DebugOut(L"Result:\t");
 	for (int x = startX; x <= endX; x++)
 	{
 		if (x < 0 || x >= m_numXCells) continue;
@@ -120,10 +118,6 @@ void CGrid::SetActiveCells(RectF rect)
 			if (y < 0 || y >= m_numYCells) continue;
 			GetCell(x, y)->isActive = true;
 			m_activeCells.push_back(GetCell(x, y));
-			/*DebugOut(L"Cell(%d, %d)\t", x, y);*/
 		}
 	}
-
-	DebugOut(L"Num of active cells: %d\n", m_activeCells.size());
-	/*DebugOut(L"\n");*/
 }

@@ -7,8 +7,12 @@ CPortal::CPortal(float l, float t, float w, float h, int scene_id)
 	transform.position.y = t;
 	width = w;
 	height = h;
-	collider = new CCollider2D;
-	GetCollider()->SetGameObject(this);
+
+	auto collider = new CCollider2D;
+	collider->SetGameObject(this);
+	collider->SetOffset(VectorZero());
+	collider->SetBoxSize(Vector2(w, h));
+	colliders.push_back(collider);
 }
 
 void CPortal::Update(DWORD dt)
@@ -23,7 +27,7 @@ void CPortal::Render()
 
 	LPDIRECT3DTEXTURE9 bbox = CGame::GetInstance()->GetService<CTextures>()->Get("tex-bbox");
 
-	RectF boundingBox = GetCollider()->GetBoundingBox();
+	RectF boundingBox = colliders.at(0)->GetBoundingBox();
 
 	rect.left = 0;
 	rect.top = 0;
@@ -31,14 +35,4 @@ void CPortal::Render()
 	rect.bottom = boundingBox.top - boundingBox.bottom;
 
 	CGame::GetInstance()->Draw(p, bbox, rect.left, rect.top, rect.right, rect.bottom, 255);
-}
-
-void CPortal::UpdateBoundingBox()
-{
-	RectF boundingBox;
-	boundingBox.left = transform.position.x;
-	boundingBox.top = transform.position.y;
-	boundingBox.right = transform.position.x + width;
-	boundingBox.bottom = transform.position.y - height;
-	collider->SetBoundingBox(boundingBox);
 }
