@@ -227,7 +227,7 @@ void CPlayScene::Load()
 void CPlayScene::PreUpdate()
 {
 	auto game = CGame::GetInstance();
-	mainCam->Update(player->GetPosition());
+	mainCam->Update(player->GetPosition() + Vector2(-game->GetScreenWidth() / 2, game->GetScreenHeight() / 2));
 	grid->SetActiveCells(mainCam->GetBoundingBox());
 
 	UpdatePotentialObjects();

@@ -8,7 +8,7 @@ protected:
 	Vector2 bbOffset;
 	Vector2 bbSize;
 public:
-	Vector2 WorldPointToScreenPoint(Vector2 pos);
+	Vector3 WorldToScreenPoint(Vector2 pos);
 	CCamera();
 	~CCamera();
 	Vector2 GetCamPos() { return this->position; }

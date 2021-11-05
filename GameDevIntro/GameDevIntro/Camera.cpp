@@ -3,9 +3,9 @@
 #include "Scenes.h"
 #include "PlayScene.h"
 
-Vector2 CCamera::WorldPointToScreenPoint(Vector2 pos)
+Vector3 CCamera::WorldToScreenPoint(Vector2 pos)
 {
-	return Vector2(floor(pos.x - position.x), floor(-pos.y + position.y));
+	return Vector3(floor(pos.x - position.x), floor(-pos.y + position.y), 0);
 }
 
 CCamera::CCamera()
@@ -18,28 +18,24 @@ CCamera::~CCamera()
 
 RectF CCamera::GetBoundingBox()
 {
-	Vector2 posBoundingBox = position + bbOffset;
-
+	Vector2 posBB = position + bbOffset;
 	RectF boundingBox;
-	boundingBox.left = position.x + bbSize.x / 2;
-	boundingBox.top = position.y - bbSize.y / 2;
-	boundingBox.right = position.x + bbSize.x * 3/2;
-	boundingBox.bottom = position.y - bbSize.y *3/2;
+	boundingBox.left = posBB.x;
+	boundingBox.top = posBB.y;
+	boundingBox.right = posBB.x + bbSize.x;
+	boundingBox.bottom = posBB.y - bbSize.y;
 	return boundingBox;
 }
 
 void CCamera::Update(Vector2 pos)
 {
 	position = pos;
-	position.x -= bbSize.x;
-	position.y += bbSize.y;
 	/*camPos.x = camPos.x < 0 ? 0 : camPos.x;
 	camPos.y = camPos.y < 0 ? 0 : camPos.y;*/
 }
 
 void CCamera::RenderBoundingBox()
 {
-	Vector2 pos = position + bbOffset;
 	LPDIRECT3DTEXTURE9 blue_bbox = CGame::GetInstance()->GetService<CTextures>()->Get("tex-bbox");
 
 	RectF rect;
@@ -48,5 +44,5 @@ void CCamera::RenderBoundingBox()
 	rect.right = bbSize.x;
 	rect.bottom = bbSize.y;
 
-	CGame::GetInstance()->Draw(pos, blue_bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+	CGame::GetInstance()->Draw(position + bbOffset, blue_bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
 }
