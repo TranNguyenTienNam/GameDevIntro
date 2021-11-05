@@ -116,7 +116,9 @@ LPDIRECT3DTEXTURE9 CGame::LoadTexture(LPCWSTR texturePath, D3DCOLOR transparentC
 
 void CGame::Update(DWORD dt)
 {
-	CGame::GetInstance()->GetService<CScenes>()->GetCurrentScene()->Update(dt);
+	auto currentScene = CGame::GetInstance()->GetService<CScenes>()->GetCurrentScene();
+	currentScene->PreUpdate();
+	currentScene->Update(dt);
 }
 
 void CGame::Render()
@@ -181,12 +183,12 @@ void CGame::GameRun()
 		{
 			frameStart = now;
 
-			CGame::GetInstance()->GetService<CScenes>()->GetCurrentScene()->PreUpdate();
-
 			CGame::GetInstance()->GetService<CInputHandler>()->ProcessKeyboard();
 
 			Update(deltaTime);
 			Render();
+
+			CGame::GetInstance()->GetService<CScenes>()->GetCurrentScene()->Clean();
 		}
 		else
 			Sleep(tickPerFrame - deltaTime);

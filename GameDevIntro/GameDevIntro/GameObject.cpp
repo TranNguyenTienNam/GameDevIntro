@@ -1,7 +1,9 @@
 #include "GameObject.h"
+#include "Utils.h"
 
 CGameObject::CGameObject()
 {
+	isEnabled = true;
 	transform.position = VectorZero();
 	velocity = VectorZero();
 }

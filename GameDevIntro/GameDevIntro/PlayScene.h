@@ -19,7 +19,7 @@ class CPlayScene : public CScene
 protected:
 	CMario* player;							// A play scene has to have player, right? 
 	std::vector<CGameObject*> objects;
-	std::vector<CGameObject*> potentials;
+	std::vector<CGameObject*> potentials, destroyed;
 	std::unique_ptr<CGrid> grid;			// Grid for space partitioning for collision
 	CCamera* mainCam;
 
@@ -40,6 +40,7 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+	virtual void Clean();
 
 	CMario* GetPlayer() { return player; }
 	CCamera* GetCamera() { return mainCam; }

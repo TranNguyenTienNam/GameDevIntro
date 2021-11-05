@@ -53,7 +53,7 @@ ani-brick	spr-brick-0	100	spr-brick-1	100	spr-brick-2	100	spr-brick-3	100	spr-br
 [OBJECTS]
 # type		x	y
 # MARIO
-obj-mario	328	240
+obj-mario	220	240
 
 # BRICK 
 # --- platform (hint: I created the list using Excel!) ----
@@ -104,5 +104,5 @@ obj-brick	204	150
 
 # --- SCENE PORTAL ----
 # type		x	y	w	h	scene_id
-obj-portal	0	130	20	40	1
+obj-portal	0	130	20	40	2
 

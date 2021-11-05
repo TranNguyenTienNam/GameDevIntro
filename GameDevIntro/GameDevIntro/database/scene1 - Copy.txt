@@ -1,3 +1,6 @@
+[BACKGROUND_COLOR]
+190	237	243
+
 # id	file_path	transparent_color_r	g	b
 [TEXTURES]
 tex-mario	textures\mario.png	255	255	255
@@ -44,64 +47,62 @@ ani-small-mario-walk-right	spr-small-mario-walk-right-0	100	spr-small-mario-idle
 #die
 #599	10099	100
 
-
 # ==== BRICK =========
 ani-brick	spr-brick-0	100	spr-brick-1	100	spr-brick-2	100	spr-brick-3	100	spr-brick-4	100
 
 [OBJECTS]
-# type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba
+# type		x	y
 # MARIO
-0	50.0	0	1
+obj-mario	120	240
 
 # BRICK 
 # --- platform (hint: I created the list using Excel!) ----
-1	0	150	2
-1	16	150	2
-1	32	150	2
-1	48	150	2
-1	64	150	2
-1	80	150	2
-1	96	150	2
-1	112	150	2
-1	128	150	2
-1	144	150	2
-1	160	150	2
-1	176	150	2
-1	192	150	2
-1	208	150	2
-1	224	150	2
-1	240	150	2
-1	256	150	2
-1	272	150	2
-1	288	150	2
-1	304	150	2
-1	320	150	2
-1	336	150	2
-1	352	150	2
-1	368	150	2
-1	384	150	2
-1	400	150	2
-1	416	150	2
-1	432	150	2
-1	448	150	2
+obj-brick	0	90
+obj-brick	16	90
+obj-brick	32	90
+obj-brick	48	90
+obj-brick	64	90
+obj-brick	80	90
+obj-brick	96	90
+obj-brick	112	90
+obj-brick	128	90
+obj-brick	144	90
+obj-brick	160	90
+obj-brick	176	90
+obj-brick	192	90
+obj-brick	208	90
+obj-brick	224	90
+obj-brick	240	90
+obj-brick	256	90
+obj-brick	272	90
+obj-brick	288	90
+obj-brick	304	90
+obj-brick	320	90
+obj-brick	336	90
+obj-brick	352	90
+obj-brick	368	90
+obj-brick	384	90
+obj-brick	400	90
+obj-brick	416	90
+obj-brick	432	90
+obj-brick	448	90
 
 # ---- brick group 1 ----
-1	100	74	2
-1	100	90	22
-1	84	90	22
+obj-brick	100	166
+obj-brick	100	150
+obj-brick	84	150
 
 # ---- brick group 2 ----
-1	160	74	2
-1	160	90	22
-1	144	90	22
+obj-brick	160	166
+obj-brick	160	150
+obj-brick	144	150
 
 # ---- brick group 3 ----
-1	220	74	2
-1	220	90	22
-1	204	90	22
+obj-brick	220	166
+obj-brick	220	150
+obj-brick	204	150
 
 # --- SCENE PORTAL ----
-# type	x	y	w	h	scene_id
-50	300	98	30	60	1
+# type		x	y	w	h	scene_id
+obj-portal	0	130	20	40	1
 

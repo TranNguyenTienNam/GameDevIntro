@@ -216,7 +216,7 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-		if (!isTrigger)
+		if (isTrigger == false)
 		{
 			// push out a bit to avoid overlapping next frame 
 			pos.x += min_tx * dx + nx * 0.4f;		
@@ -230,7 +230,7 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 		}
 
 		if (nx != 0 || ny != 0)
-			if (!isTrigger) object->OnCollisionEnter(this, coEventsResult);
+			if (isTrigger == false) object->OnCollisionEnter(this, coEventsResult);
 			else object->OnTriggerEnter(this, coEventsResult);
 	}
 

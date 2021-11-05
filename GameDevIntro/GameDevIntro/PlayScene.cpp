@@ -167,8 +167,10 @@ void CPlayScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
 
+	// Init Camera
 	mainCam = new CCamera();
 
+	// Init Grid
 	int screenWidth = CGame::GetInstance()->GetScreenWidth();
 	int screenHeight = CGame::GetInstance()->GetScreenHeight();
 	grid = std::make_unique<CGrid>(screenWidth * 10, screenHeight * 3, CELL_SIZE);
@@ -217,8 +219,6 @@ void CPlayScene::Load()
 	CGame::GetInstance()->GetService<CTextures>()->Add("tex-green-bbox", L"textures\\green-bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
-
-	DebugOut(L"[LOAD] Num of potential objects: %d\n", potentials.size());
 }
 
 void CPlayScene::PreUpdate()
@@ -241,7 +241,7 @@ void CPlayScene::UpdatePotentialObjects()
 			potentials.push_back(obj);
 	}
 
-	for (auto obj : potentials)
+	for (auto obj : objects)
 	{
 		Cell* newCell = grid->GetCell(obj->GetPosition());
 		if (newCell != nullptr && newCell != obj->GetCell())
@@ -250,61 +250,37 @@ void CPlayScene::UpdatePotentialObjects()
 			grid->AddGameObject(obj, newCell);
 		}
 	}
-	DebugOut(L"Num of potential objects: %d\n", potentials.size());
 }
 
 void CPlayScene::Update(DWORD dt)
 {
 	for (auto obj : potentials)
-		obj->UpdateBoundingBox();
+		if (obj->IsEnabled() == true) obj->UpdateBoundingBox();
 
 	for (auto obj : potentials)
-		obj->PhysicsUpdate(&potentials);
+		if (obj->IsEnabled() == true) obj->PhysicsUpdate(&potentials);
 	
 	for (auto obj : potentials)
-		obj->Update(dt);
-
-	//for (size_t i = 0; i < potentials.size(); i++)
-	//{
-	//	potentials[i]->UpdateBoundingBox();
-	//	potentials[i]->PhysicsUpdate(&potentials);
-	//	potentials[i]->Update(dt);
-
-	//	// Check to see if the game object moved
-	//	Cell* newCell = grid->GetCell(potentials[i]->GetPosition());
-	//	if (newCell != nullptr && newCell != potentials[i]->GetCell())
-	//	{
-	//		grid->RemoveGameObjectFromCell(potentials[i]);
-	//		grid->AddGameObject(potentials[i], newCell);
-	//	}
-	//}
-
-	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
-	if (player == NULL) return;
+		if (obj->IsEnabled() == true) obj->Update(dt);
 }
 
 void CPlayScene::Render()
 {
 	for (auto obj : potentials)
-		obj->Render();
+		if (obj->IsEnabled() == true) obj->Render();
 
 	for (auto obj : potentials)
-		obj->RenderBoundingBox();
+		if (obj->IsEnabled() == true) obj->RenderBoundingBox();
 
-	/*for (int i = 0; i < potentials.size(); i++)
-	{
-		potentials[i]->Render();
-		potentials[i]->RenderBoundingBox();
-	}*/
-
-	for (int i= 0; i < grid->m_cells.size(); i++)
+	// RENDERING GIZMO
+	/*for (int i= 0; i < grid->m_cells.size(); i++)
 	{
 		int x = i % grid->m_numXCells;
 		int y = i / grid->m_numXCells;
 		grid->RenderBoundingBox(x, y);
 	}
 
-	mainCam->RenderBoundingBox();
+	mainCam->RenderBoundingBox();*/
 }
 
 /*
@@ -312,13 +288,27 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	for (auto obj : objects) delete obj;
+	for (auto obj : objects)
+		obj->Disable();
+
 	objects.clear();
 
 	player = NULL;
 	grid.reset();
+	
+	if (mainCam != nullptr)
+	{
+		delete mainCam;
+		mainCam = nullptr;
+	}
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
+}
+
+void CPlayScene::Clean()
+{
+	for (auto obj : objects)
+		if (obj->IsEnabled() == false) delete obj;
 }
 
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
@@ -333,6 +323,8 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	/*case DIK_A:
 		mario->Reset();*/
+	case DIK_A:
+		CGame::GetInstance()->GetService<CScenes>()->SwitchScene(1);
 		break;
 	}
 }

@@ -16,6 +16,7 @@ struct CCollisionEvent;
 class CGameObject
 {
 protected:
+	bool isEnabled;
 	Transform transform;
 	Vector2 velocity;
 	int nx;
@@ -24,11 +25,12 @@ protected:
 	Cell* ownerCell;
 	int cellVectorIndex = -1;
 	std::unordered_map<std::string, LPANIMATION> animations;
-
 public:
 	CGameObject();
 	~CGameObject();
 
+	bool IsEnabled() { return this->isEnabled; }
+	void Disable() { this->isEnabled = false; }
 	void SetPosition(Vector2 pos) { this->transform.position = pos; }
 	Vector2 GetPosition() { return this->transform.position; }
 	void SetVelocity(Vector2 v) { this->velocity = v; }

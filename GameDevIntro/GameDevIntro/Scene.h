@@ -25,6 +25,7 @@ public:
 	virtual void PreUpdate() = 0;
 	virtual void Update(DWORD dt) = 0;
 	virtual void Render() = 0;
+	virtual void Clean() = 0;
 };
 typedef CScene* LPSCENE;
 
