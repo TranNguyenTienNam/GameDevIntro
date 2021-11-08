@@ -1,0 +1,6 @@
+[SETTINGS]
+start	1
+#scene list
+[SCENES]
+1	database\scene_1.txt
+2	database\scene2.txt

@@ -1,6 +1,5 @@
 #pragma once
 #include <dinput.h>
-//#include "Mario.h"
 
 class CKeyEventHandler
 {
@@ -11,15 +10,3 @@ public:
 };
 
 typedef CKeyEventHandler* LPKEYEVENTHANDLER;
-
-//class CSampleKeyHandler : public CKeyEventHandler
-//{
-//private:
-//	CMario* target;
-//public:
-//	void SetTarget(CMario* target) { this->target = target; }
-//
-//	virtual void KeyState(BYTE* states);
-//	virtual void OnKeyDown(int KeyCode);
-//	virtual void OnKeyUp(int KeyCode);
-//};

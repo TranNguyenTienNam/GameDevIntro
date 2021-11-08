@@ -97,7 +97,7 @@ void CGrid::SetActiveCells(RectF rect)
 {
 	m_activeCells.clear();
 
-	// Unshow all cells
+	// [GIZMO] Unshow all cells 
 	for (int i = 0; i < m_cells.size(); i++)
 	{
 		int x = i % m_numXCells;
@@ -116,8 +116,9 @@ void CGrid::SetActiveCells(RectF rect)
 		for (int y = startY; y <= endY; y++)
 		{
 			if (y < 0 || y >= m_numYCells) continue;
-			GetCell(x, y)->isActive = true;
 			m_activeCells.push_back(GetCell(x, y));
+
+			GetCell(x, y)->isActive = true; // [GIZMO]
 		}
 	}
 }

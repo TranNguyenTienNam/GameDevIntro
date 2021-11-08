@@ -1,0 +1,38 @@
+[BACKGROUND_COLOR]
+190	237	243
+
+# id		file_path		transparent_color_r_g_b
+[TEXTURES]
+tex-enemies	textures\enemies.png	176	224	248
+
+# id		left	top	width	height	texture_id
+[SPRITES]
+# JASON
+# GX680
+# GX680S
+# DRAP
+spr-drap-0	132	275	18	18	tex-enemies
+spr-drap-1	152	275	18	18	tex-enemies
+spr-drap-2	172	275	18	18	tex-enemies
+spr-drap-3	192	275	18	18	tex-enemies
+
+# ani_id	sprite1_id	time1	sprite2_id	time2	...
+[ANIMATIONS]
+
+# ==== JASON =========
+# ==== DRAP ==========
+ani-drap	spr-drap-0	100	spr-drap-1	100	spr-drap-2	100	spr-drap-3	100
+
+[OBJECTS]
+# type		x	y
+# MARIO
+obj-mario	220	240
+
+# BRICK 
+# --- platform (hint: I created the list using Excel!) ----
+
+
+# --- SCENE PORTAL ----
+# type		x	y	w	h	scene_id
+obj-portal	0	130	20	40	2
+

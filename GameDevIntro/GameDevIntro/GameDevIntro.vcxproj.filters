@@ -40,12 +40,18 @@
     <Filter Include="Framework\Camera">
       <UniqueIdentifier>{d760948c-6c86-46cc-a353-17b4d1234b8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Source">
+      <UniqueIdentifier>{eb8117aa-c953-4c9a-95cc-def60efebf85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Source\Player">
+      <UniqueIdentifier>{5d728294-b19d-4593-8fc1-2500f8031916}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Source\Enemy">
+      <UniqueIdentifier>{552691ea-5a9a-4969-8356-7c730a29a44e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mario.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayScene.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Portal.h">
@@ -108,15 +114,24 @@
     <ClInclude Include="Camera.h">
       <Filter>Framework\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="PlayScene.h">
+      <Filter>Framework\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Jason.h">
+      <Filter>Game Source\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Sophia.h">
+      <Filter>Game Source\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="BigJason.h">
+      <Filter>Game Source\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Mario.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Portal.cpp">
@@ -172,6 +187,12 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Framework\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayScene.cpp">
+      <Filter>Framework\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Sophia.cpp">
+      <Filter>Game Source\Player</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

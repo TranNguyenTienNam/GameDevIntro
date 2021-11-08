@@ -6,7 +6,7 @@
 #include "Utils.h"
 #include "Game.h"
 
-#define WINDOW_TITLE L"SAMPLE 05 - SCENCE MANAGER"
+#define WINDOW_TITLE L"LOI MEO THI THAM"
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define WINDOW_ICON_PATH L"brick.ico" 

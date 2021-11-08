@@ -10,7 +10,7 @@ class Transform
 public:
 	Vector2 position;
 	Vector2 rotation;
-	float scale;
+	Vector2 scale;
 };
 
 struct RectF

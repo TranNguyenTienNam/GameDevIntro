@@ -25,7 +25,7 @@ void CAnimation::Render(Vector2 position, int alpha)
 		{
 			currentFrame++;
 			lastFrameTime = now;
-			if (currentFrame == frames.size()) currentFrame = 0;
+			if (currentFrame == frames.size()) currentFrame = 0; // TODO: IsLoop?
 		}
 	}
 

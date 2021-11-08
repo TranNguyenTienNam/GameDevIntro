@@ -7,6 +7,7 @@
 
 class CSprite
 {
+protected:
 	int left;
 	int top;
 	int width;
@@ -30,6 +31,15 @@ public:
 	void Add(std::string id, int left, int top, int right, int bottom, LPDIRECT3DTEXTURE9 texture);
 	LPSPRITE Get(std::string id);
 	void Clear();
+};
+
+class CTile : public CSprite
+{
+protected:
+	Vector2 position;
+public:
+	CTile(Vector2 pos, int left, int top, int width, int height, LPDIRECT3DTEXTURE9 texture);
+	void Draw(int alpha);
 };
 
 #endif

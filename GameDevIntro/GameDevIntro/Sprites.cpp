@@ -36,3 +36,14 @@ void CSprites::Clear()
 
 	sprites.clear();
 }
+
+CTile::CTile(Vector2 pos, int left, int top, int width, int height, LPDIRECT3DTEXTURE9 texture) 
+	:CSprite(left, top, width, height, texture)
+{
+	position = pos;
+}
+
+void CTile::Draw(int alpha)
+{
+	CGame::GetInstance()->Draw(position, texture, left, top, left + width, top + height, alpha);
+}

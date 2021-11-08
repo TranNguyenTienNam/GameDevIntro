@@ -5,6 +5,11 @@
 #include "PlayScene.h"
 #include "Utils.h"
 #include "Animations.h"
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/filereadstream.h"
+
 #include "Portal.h"
 #include "Brick.h"
 
@@ -29,12 +34,8 @@ CPlayScene::~CPlayScene()
 #define SCENE_SECTION_TEXTURES			2
 #define SCENE_SECTION_SPRITES			3
 #define SCENE_SECTION_ANIMATIONS		4
+#define SCENE_SECTION_TILEMAP			5
 #define SCENE_SECTION_OBJECTS			6
-
-#define OBJECT_TYPE_MARIO	0
-#define OBJECT_TYPE_BRICK	1
-
-#define OBJECT_TYPE_PORTAL	50
 
 #define MAX_SCENE_LINE 1024
 
@@ -111,6 +112,76 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 	CGame::GetInstance()->GetService<CAnimations>()->Add(ani_id, ani);
 }
 
+void CPlayScene::_ParseSection_TILEMAP(std::string line)
+{
+	vector<string> tokens = split(line);
+
+	if (tokens.size() < 1 || tokens[0] == "") return;
+
+	string filePath = tokens[0];
+
+	FILE* fp;
+	errno_t err = fopen_s(&fp, filePath.c_str(), "r");
+
+	char readBuffer[65536];
+	rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+
+	rapidjson::Document d;
+	d.ParseStream(is);
+
+	int tileWidth = d["tilewidth"].GetInt();
+	int tileHeight = d["tileheight"].GetInt();
+
+	auto layers = d["layers"].GetArray();
+	
+	// Tileset texture settings
+	int columns = d["tilesets"].GetArray()[0]["columns"].GetInt();
+	int spacing = d["tilesets"].GetArray()[0]["spacing"].GetInt();
+	wstring image_path = ToWSTR(d["tilesets"].GetArray()[0]["image"].GetString()).c_str();
+	
+	CGame::GetInstance()->GetService<CTextures>()->Add("tex-tileset", L"tileset.png", D3DCOLOR_XRGB(0, 0, 0)); // TODO: Fix cant read image file
+
+	for (auto& layer : layers)
+	{
+		int mapWidth = layer["width"].GetInt();
+		int mapHeight = layer["height"].GetInt();
+
+		auto data = layer["data"].GetArray();
+
+		for (int x = 0; x < mapWidth; x++)
+		{
+			for (int y = 0; y < mapHeight; y++)
+			{
+				int tilesetID = data[y * mapWidth + x].GetInt() - 1;
+				/*DebugOut(L"tilesetID %d\n", tilesetID);*/
+
+				// Get tile coordinate in tileset by id
+				int tileX = tilesetID % columns;
+				int tileY = tilesetID / columns;
+
+				int left = tileX * (tileWidth + spacing);
+				int top = tileY * (tileHeight + spacing);
+
+				auto texTileset = CGame::GetInstance()->GetService<CTextures>()->Get("tex-tileset");
+				
+				int posX = x * tileWidth;
+				int posY = (mapHeight - y) * tileHeight;
+				/*float posY = y * tileHeight;*/
+
+				/*DebugOut(L"index %d %d\n", tileX, tileY);*/
+				Vector2 position = Vector2(posX, posY);
+
+				auto newTile = new CTile(position, left, top, tileWidth, tileHeight, texTileset);
+
+				/*DebugOut(L"pos %f %f, l %d, t %d, w %d, h %d\n", position.x, position.y, left, top, tileWidth, tileHeight);*/
+				tilemap.push_back(newTile);
+			}
+		}
+	}
+
+	fclose(fp);
+}
+
 /*
 	Parse a line in section [OBJECTS]
 */
@@ -172,6 +243,7 @@ void CPlayScene::Load()
 	auto game = CGame::GetInstance();
 	mainCam->SetBoundingBoxSize(Vector2(game->GetScreenWidth() / 2, game->GetScreenHeight() / 2));
 	mainCam->SetBoundingBoxOffset(Vector2(game->GetScreenWidth() / 4, -game->GetScreenHeight() / 4));
+	mainCam->SetScale(Vector2(2.4f, 2.4f));
 
 	// Init Grid
 	int screenWidth = CGame::GetInstance()->GetScreenWidth();
@@ -192,15 +264,10 @@ void CPlayScene::Load()
 		if (line[0] == '#') continue;	// skip comment lines	
 		if (line == "[BACKGROUND_COLOR]") { section = SCENE_SECTION_BACKGROUND_COLOR; continue; }
 		if (line == "[TEXTURES]") { section = SCENE_SECTION_TEXTURES; continue; }
-		if (line == "[SPRITES]") {
-			section = SCENE_SECTION_SPRITES; continue;
-		}
-		if (line == "[ANIMATIONS]") {
-			section = SCENE_SECTION_ANIMATIONS; continue;
-		}
-		if (line == "[OBJECTS]") {
-			section = SCENE_SECTION_OBJECTS; continue;
-		}
+		if (line == "[SPRITES]") { section = SCENE_SECTION_SPRITES; continue; }
+		if (line == "[ANIMATIONS]") { section = SCENE_SECTION_ANIMATIONS; continue; }
+		if (line == "[TILEMAP]") { section = SCENE_SECTION_TILEMAP; continue; }
+		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; }
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
 
 		//
@@ -212,6 +279,7 @@ void CPlayScene::Load()
 		case SCENE_SECTION_TEXTURES: _ParseSection_TEXTURES(line); break;
 		case SCENE_SECTION_SPRITES: _ParseSection_SPRITES(line); break;
 		case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
+		case SCENE_SECTION_TILEMAP: _ParseSection_TILEMAP(line); break;
 		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 		}
 	}
@@ -226,8 +294,7 @@ void CPlayScene::Load()
 
 void CPlayScene::PreUpdate()
 {
-	auto game = CGame::GetInstance();
-	mainCam->Update(player->GetPosition() + Vector2(-game->GetScreenWidth() / 2, game->GetScreenHeight() / 2));
+	mainCam->Update();
 	grid->SetActiveCells(mainCam->GetBoundingBox());
 
 	UpdatePotentialObjects();
@@ -256,29 +323,32 @@ void CPlayScene::UpdatePotentialObjects()
 
 void CPlayScene::Update(DWORD dt)
 {
-	for (auto obj : potentials)
-		if (obj->IsEnabled() == true) obj->PhysicsUpdate(&potentials);
+	for (auto obj : objects)
+		if (obj->IsEnabled() == true) obj->PhysicsUpdate(&objects);
 	
-	for (auto obj : potentials)
+	for (auto obj : objects)
 		if (obj->IsEnabled() == true) obj->Update(dt);
 }
 
 void CPlayScene::Render()
 {
-	for (auto obj : potentials)
+	for (auto tile : tilemap)
+		tile->Draw(255);
+
+	for (auto obj : objects)
 		if (obj->IsEnabled() == true) obj->Render();
 
 	// RENDERING GIZMO
-	for (auto obj : potentials)
-		if (obj->IsEnabled() == true) obj->RenderBoundingBox();
+	/*for (auto obj : potentials)
+		if (obj->IsEnabled() == true) obj->RenderBoundingBox();*/
 
-
-	for (int i= 0; i < grid->m_cells.size(); i++)
+	// TODO: Something wrong terribly
+	/*for (int i= 0; i < grid->m_cells.size(); i++)
 	{
 		int x = i % grid->m_numXCells;
 		int y = i / grid->m_numXCells;
 		grid->RenderBoundingBox(x, y);
-	}
+	}*/
 
 	mainCam->RenderBoundingBox();
 }

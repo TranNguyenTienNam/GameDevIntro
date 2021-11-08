@@ -6,7 +6,7 @@
 tex-mario	textures\mario.png	255	255	255
 tex-misc	textures\misc.png	176	224	248
 
-# id	left	top	right	bottom	texture_id
+# id	left	top	width	height	texture_id
 [SPRITES]
 # MARIO
 # idle
@@ -49,6 +49,9 @@ ani-small-mario-walk-right	spr-small-mario-walk-right-0	100	spr-small-mario-idle
 
 # ==== BRICK =========
 ani-brick	spr-brick-0	100	spr-brick-1	100	spr-brick-2	100	spr-brick-3	100	spr-brick-4	100
+
+[TILEMAP]
+sectionA.json
 
 [OBJECTS]
 # type		x	y
@@ -104,5 +107,5 @@ obj-brick	204	150
 
 # --- SCENE PORTAL ----
 # type		x	y	w	h	scene_id
-obj-portal	0	130	20	40	2
+#obj-portal	0	130	20	40	2
 

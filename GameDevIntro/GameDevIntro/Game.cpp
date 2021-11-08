@@ -72,14 +72,36 @@ void CGame::InitDirectX(HWND hWnd)
 
 void CGame::Draw(Vector2 position, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha)
 {
-	Vector3 p = ((CPlayScene*)GetService<CScenes>()->GetCurrentScene())->GetCamera()->WorldToScreenPoint(position);
+	auto camera = ((CPlayScene*)GetService<CScenes>()->GetCurrentScene())->GetCamera();
+	Vector2 camPos = camera->GetPosition();
+	Vector2 camScale = camera->GetScale();
+	Vector3 p = Vector3(0,0,0);
 
 	RECT r;
 	r.left = left;
 	r.top = top;
 	r.right = right;
 	r.bottom = bottom;
-	spriteHandler->Draw(texture, &r, NULL, &p, D3DCOLOR_ARGB(alpha, 255, 255, 255));
+
+	Vector3 center = Vector3((right - left) / 2, (bottom - top) / 2, 0.0f);
+
+	D3DXMATRIX mat;
+	D3DXMatrixIdentity(&mat);
+
+	// Translate
+	D3DXMATRIX translate;
+	D3DXMatrixTranslation(&translate, (position.x * camScale.x - camPos.x), (-position.y * camScale.y + camPos.y), 0.0f);
+
+	// Scale
+	D3DXMATRIX scale;
+	D3DXMatrixScaling(&scale, camScale.x, camScale.y, 1.0f);
+	
+	mat *= scale;
+	mat *= translate;
+	
+	spriteHandler->SetTransform(&mat);
+
+	spriteHandler->Draw(texture, &r, &center, &p, D3DCOLOR_ARGB(alpha, 255, 255, 255));
 }
 
 LPDIRECT3DTEXTURE9 CGame::LoadTexture(LPCWSTR texturePath, D3DCOLOR transparentColor)

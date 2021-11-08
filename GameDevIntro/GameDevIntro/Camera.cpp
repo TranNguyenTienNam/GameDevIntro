@@ -5,7 +5,7 @@
 
 Vector3 CCamera::WorldToScreenPoint(Vector2 pos)
 {
-	return Vector3(floor(pos.x - position.x), floor(-pos.y + position.y), 0);
+	return Vector3(floor(pos.x - transform.position.x), floor(-pos.y + transform.position.y), 0);
 }
 
 CCamera::CCamera()
@@ -18,7 +18,7 @@ CCamera::~CCamera()
 
 RectF CCamera::GetBoundingBox()
 {
-	Vector2 posBB = position + bbOffset;
+	Vector2 posBB = transform.position + bbOffset;
 	RectF boundingBox;
 	boundingBox.left = posBB.x;
 	boundingBox.top = posBB.y;
@@ -27,9 +27,15 @@ RectF CCamera::GetBoundingBox()
 	return boundingBox;
 }
 
-void CCamera::Update(Vector2 pos)
+void CCamera::Update()
 {
-	position = pos;
+	auto game = CGame::GetInstance();
+	auto posPlayer = ((CPlayScene*)game->GetService<CScenes>()->GetCurrentScene())->GetPlayer()->GetPosition();
+	
+	float x = posPlayer.x * transform.scale.x - game->GetScreenWidth() / 2;
+	float y = posPlayer.y * transform.scale.y + game->GetScreenHeight() / 2;
+	transform.position = Vector2(x, y);
+
 	/*camPos.x = camPos.x < 0 ? 0 : camPos.x;
 	camPos.y = camPos.y < 0 ? 0 : camPos.y;*/
 }
@@ -44,5 +50,5 @@ void CCamera::RenderBoundingBox()
 	rect.right = bbSize.x;
 	rect.bottom = bbSize.y;
 
-	CGame::GetInstance()->Draw(position + bbOffset, blue_bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+	CGame::GetInstance()->Draw(transform.position + bbOffset, blue_bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
 }
