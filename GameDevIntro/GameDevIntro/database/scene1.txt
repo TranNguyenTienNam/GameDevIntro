@@ -3,107 +3,143 @@
 
 # id	file_path	transparent_color_r	g	b
 [TEXTURES]
+tex-player	textures\player.png	0	57	115
 tex-mario	textures\mario.png	255	255	255
 tex-misc	textures\misc.png	176	224	248
 
-# id	left	top	width	height	texture_id
+# id			left	top	width	height	texture_id
 [SPRITES]
-# MARIO
-# idle
-spr-small-mario-idle-left-0	187	0	12	15	tex-mario
-spr-small-mario-idle-right-0	247	0	12	15	tex-mario
-#walk
-spr-small-mario-walk-left-0	125	0	15	16	tex-mario
-spr-small-mario-walk-right-0	306	0	15	16	tex-mario
-#run
-spr-small-mario-run-left-0	95	0	16	16	tex-mario
-spr-small-mario-run-left-1	155	0	16	16	tex-mario
-spr-small-mario-run-right-0	335	0	16	16	tex-mario
-spr-small-mario-run-right-1	275	0	16	16	tex-mario
-#skid
-spr-small-mario-skid-left-0	6	0	14	16	tex-mario
-spr-small-mario-skid-right-0	426	0	14	16	tex-mario
-# die 
-#10099	215	120	231	135	tex-mario
-#BRICK
-spr-brick-0	300	135	16	16	tex-misc
-spr-brick-1	318	135	16	16	tex-misc
-spr-brick-2	336	135	16	16	tex-misc
-spr-brick-3	354	135	16	16	tex-misc
-spr-brick-4	372	135	16	16	tex-misc
+# ==== JASON =========
+# idle					
+spr-jason-idle	3	30	8	16	tex-player
+# walk					
+spr-jason-walk-jump	12	30	8	16	tex-player
+spr-jason-walk-0	21	30	8	16	tex-player
+spr-jason-walk-1	30	30	8	16	tex-player
+# jump					
+spr-jason-walk-jump	12	30	8	16	tex-player
+# die					
+spr-jason-die-0	3	64	16	16	tex-player
+spr-jason-die-1	20	64	16	16	tex-player
+spr-jason-die-2	37	64	16	16	tex-player
+spr-jason-die-3	54	64	16	16	tex-player
+spr-jason-die-4	3	81	16	16	tex-player
+# crouch					
+spr-jason-crouch-0	3	47	16	8	tex-player
+spr-jason-crouch-1	20	47	16	8	tex-player
+# lie					
+spr-jason-lie	20	89	16	8	tex-player
 
-# ani_id	sprite1_id	time1	sprite2_id	time2	...
+# ==== SOPHIA =========
+# turn gun
+
+# ani_id		sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
 
-# ==== MARIO =========
-#idle left
-ani-small-mario-idle-left	spr-small-mario-idle-left-0	100
-#idle right
-ani-small-mario-idle-right	spr-small-mario-idle-right-0	100
-#walk left 
-ani-small-mario-walk-left	spr-small-mario-walk-left-0	100	spr-small-mario-idle-left-0	100
-#walk right 
-ani-small-mario-walk-right	spr-small-mario-walk-right-0	100	spr-small-mario-idle-right-0	100
-#die
-#599	10099	100
-
-# ==== BRICK =========
-ani-brick	spr-brick-0	100	spr-brick-1	100	spr-brick-2	100	spr-brick-3	100	spr-brick-4	100
+# ==== JASON =========
+# idle
+ani-jason-idle	spr-jason-idle	100
+# walk
+ani-jason-walk	spr-jason-walk-jump	100	spr-jason-walk-0	100
+# jump
+ani-jason-jump	spr-jason-walk-jump	100
+# die
+ani-jason-die	spr-jason-die-0	100	spr-jason-die-1	100	spr-jason-die-2	100	spr-jason-die-3	100
+# crouch
+ani-jason-crouch	spr-jason-crouch-0	100	spr-jason-crouch-1	100
+# lie
+ani-jason-lie	spr-jason-lie	100
 
 [TILEMAP]
-sectionA.json
+map\sectionA.json
 
 [OBJECTS]
 # type		x	y
-# MARIO
-obj-mario	220	240
+# JASON
+obj-jason	68	400
 
 # BRICK 
 # --- platform (hint: I created the list using Excel!) ----
-obj-brick	0	90
-obj-brick	16	90
-obj-brick	32	90
-obj-brick	48	90
-obj-brick	64	90
-obj-brick	80	90
-obj-brick	96	90
-obj-brick	112	90
-obj-brick	128	90
-obj-brick	144	90
-obj-brick	160	90
-obj-brick	176	90
-obj-brick	192	90
-obj-brick	208	90
-obj-brick	224	90
-obj-brick	240	90
-obj-brick	256	90
-obj-brick	272	90
-obj-brick	288	90
-obj-brick	304	90
-obj-brick	320	90
-obj-brick	336	90
-obj-brick	352	90
-obj-brick	368	90
-obj-brick	384	90
-obj-brick	400	90
-obj-brick	416	90
-obj-brick	432	90
-obj-brick	448	90
-
-# ---- brick group 1 ----
-obj-brick	100	166
-obj-brick	100	150
-obj-brick	84	150
-
-# ---- brick group 2 ----
-obj-brick	160	166
-obj-brick	160	150
-obj-brick	144	150
-
-# ---- brick group 3 ----
-obj-brick	220	166
-obj-brick	220	150
-obj-brick	204	150
+obj-brick	64	400
+obj-brick	80	400
+obj-brick	96	400
+obj-brick	112	400
+obj-brick	128	400
+obj-brick	48	400
+obj-brick	48	384
+obj-brick	48	368
+obj-brick	48	352
+obj-brick	48	336
+obj-brick	48	320
+obj-brick	64	320
+obj-brick	80	320
+obj-brick	80	304
+obj-brick	80	288
+obj-brick	96	288
+obj-brick	112	288
+obj-brick	112	272
+obj-brick	112	256
+obj-brick	128	256
+obj-brick	144	256
+obj-brick	80	240
+obj-brick	96	240
+obj-brick	112	240
+obj-brick	128	240
+obj-brick	144	240
+obj-brick	80	224
+obj-brick	80	208
+obj-brick	80	192
+obj-brick	80	176
+obj-brick	64	176
+obj-brick	48	176
+obj-brick	48	160
+obj-brick	48	144
+obj-brick	48	128
+obj-brick	48	112
+obj-brick	48	96
+obj-brick	48	80
+obj-brick	48	64
+obj-brick	64	64
+obj-brick	80	64
+obj-brick	96	64
+obj-brick	128	384
+obj-brick	128	368
+obj-brick	144	368
+obj-brick	160	368
+obj-brick	160	352
+obj-brick	160	336
+obj-brick	160	320
+obj-brick	160	304
+obj-brick	176	304
+obj-brick	192	304
+obj-brick	192	288
+obj-brick	192	272
+obj-brick	192	256
+obj-brick	192	240
+obj-brick	192	224
+obj-brick	192	208
+obj-brick	192	192
+obj-brick	192	176
+obj-brick	160	192
+obj-brick	176	192
+obj-brick	160	176
+obj-brick	176	176
+obj-brick	208	176
+obj-brick	224	176
+obj-brick	224	160
+obj-brick	224	144
+obj-brick	224	128
+obj-brick	96	80
+obj-brick	96	96
+obj-brick	112	96
+obj-brick	128	96
+obj-brick	128	112
+obj-brick	128	128
+obj-brick	144	128
+obj-brick	160	128
+obj-brick	176	128
+obj-brick	192	128
+obj-brick	208	128
 
 # --- SCENE PORTAL ----
 # type		x	y	w	h	scene_id

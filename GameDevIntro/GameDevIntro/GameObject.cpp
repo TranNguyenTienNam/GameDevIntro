@@ -4,6 +4,7 @@
 CGameObject::CGameObject()
 {
 	isEnabled = true;
+	nx = 1;
 	transform.position = VectorZero();
 	velocity = VectorZero();
 }

@@ -2,5 +2,6 @@
 start	1
 #scene list
 [SCENES]
-1	database\scene_1.txt
-2	database\scene2.txt
+1	database\scene1.txt
+2	database\scene1 - Copy.txt
+#3	scene-test.txt

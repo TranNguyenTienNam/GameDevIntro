@@ -1,8 +1,6 @@
 #include <algorithm>    
 #include "Collider2D.h"
 #include "Utils.h"
-#include "Mario.h"
-#include "Portal.h"
 
 void CCollider2D::SweptAABB(
 	RectF movingRect, RectF staticRect,
@@ -199,7 +197,8 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 	this->dx = velocity.x * dt;
 	this->dy = velocity.y * dt;
 
-	velocity.y -= 0.0026f * dt; // TODO: Need to adjust gravity by mass
+	/*velocity.x += acceleration * dt;*/
+	velocity.y += -0.0026f * dt; // TODO: Need to adjust gravity by mass
 	object->SetVelocity(velocity);
 
 	coEvents.clear();
@@ -245,10 +244,10 @@ RectF CCollider2D::GetBoundingBox()
 {
 	Vector2 posCollider = object->GetPosition() + offset;
 	RectF boundingBox;
-	boundingBox.left = posCollider.x;
-	boundingBox.top = posCollider.y;
-	boundingBox.right = posCollider.x + boxSize.x;
-	boundingBox.bottom = posCollider.y - boxSize.y;
+	boundingBox.left = posCollider.x - boxSize.x / 2;
+	boundingBox.top = posCollider.y + boxSize.y / 2;
+	boundingBox.right = posCollider.x + boxSize.x / 2;
+	boundingBox.bottom = posCollider.y - boxSize.y / 2;
 	return boundingBox;
 }
 
@@ -264,5 +263,5 @@ void CCollider2D::RenderBoundingBox()
 	rect.right = boxSize.x;
 	rect.bottom = boxSize.y;
 
-	CGame::GetInstance()->Draw(posCollider, bbox, rect.left, rect.top, rect.right, rect.bottom, 100);
+	CGame::GetInstance()->Draw(posCollider, -1, bbox, rect.left, rect.top, rect.right, rect.bottom, 100);
 }

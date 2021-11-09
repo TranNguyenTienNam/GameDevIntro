@@ -43,23 +43,17 @@
     <Filter Include="Game Source">
       <UniqueIdentifier>{eb8117aa-c953-4c9a-95cc-def60efebf85}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game Source\Player">
+    <Filter Include="Game Source\Game Objects">
+      <UniqueIdentifier>{88b94886-40fb-4619-9345-73f28ea6295e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Source\Game Objects\Player">
       <UniqueIdentifier>{5d728294-b19d-4593-8fc1-2500f8031916}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game Source\Enemy">
+    <Filter Include="Game Source\Game Objects\Enemy">
       <UniqueIdentifier>{552691ea-5a9a-4969-8356-7c730a29a44e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Mario.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Portal.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Brick.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Framework\Animation</Filter>
     </ClInclude>
@@ -118,26 +112,23 @@
       <Filter>Framework\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Jason.h">
-      <Filter>Game Source\Player</Filter>
+      <Filter>Game Source\Game Objects\Player</Filter>
     </ClInclude>
     <ClInclude Include="Sophia.h">
-      <Filter>Game Source\Player</Filter>
+      <Filter>Game Source\Game Objects\Player</Filter>
     </ClInclude>
     <ClInclude Include="BigJason.h">
-      <Filter>Game Source\Player</Filter>
+      <Filter>Game Source\Game Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Brick.h">
+      <Filter>Game Source\Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Portal.h">
+      <Filter>Game Source\Game Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Mario.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Portal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Brick.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Animation.cpp">
@@ -192,7 +183,16 @@
       <Filter>Framework\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Sophia.cpp">
-      <Filter>Game Source\Player</Filter>
+      <Filter>Game Source\Game Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Jason.cpp">
+      <Filter>Game Source\Game Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Brick.cpp">
+      <Filter>Game Source\Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Portal.cpp">
+      <Filter>Game Source\Game Objects</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

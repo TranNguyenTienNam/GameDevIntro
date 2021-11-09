@@ -1,7 +1,0 @@
-[SETTINGS]
-start	1
-#scene list
-[SCENES]
-1	database\scene1.txt
-2	database\scene1 - Copy.txt
-#3	scene-test.txt

@@ -132,20 +132,30 @@ void CPlayScene::_ParseSection_TILEMAP(std::string line)
 	int tileWidth = d["tilewidth"].GetInt();
 	int tileHeight = d["tileheight"].GetInt();
 
-	auto layers = d["layers"].GetArray();
+	int mapWidth = d["width"].GetInt();			// Calculate by tile
+	int mapHeight = d["height"].GetInt();
+
+	RectF boundary; // TODO: Sua lai cac con so thanh const
+	boundary.left = -8;
+	boundary.top = mapHeight * tileHeight + 8;
+	boundary.right = mapWidth * tileWidth - 8;
+	boundary.bottom = 8;
+	mainCam->GetBoundary(boundary);
+
+	// Init Grid
+	grid = std::make_unique<CGrid>(mapWidth * tileWidth, mapHeight * tileHeight, CELL_SIZE);
 	
 	// Tileset texture settings
 	int columns = d["tilesets"].GetArray()[0]["columns"].GetInt();
 	int spacing = d["tilesets"].GetArray()[0]["spacing"].GetInt();
-	wstring image_path = ToWSTR(d["tilesets"].GetArray()[0]["image"].GetString()).c_str();
+	auto image_path = ToWSTR(d["tilesets"].GetArray()[0]["image"].GetString());
 	
-	CGame::GetInstance()->GetService<CTextures>()->Add("tex-tileset", L"tileset.png", D3DCOLOR_XRGB(0, 0, 0)); // TODO: Fix cant read image file
+	CGame::GetInstance()->GetService<CTextures>()->Add("tex-tileset", image_path.c_str(), D3DCOLOR_XRGB(0, 0, 0));
+
+	auto layers = d["layers"].GetArray();
 
 	for (auto& layer : layers)
 	{
-		int mapWidth = layer["width"].GetInt();
-		int mapHeight = layer["height"].GetInt();
-
 		auto data = layer["data"].GetArray();
 
 		for (int x = 0; x < mapWidth; x++)
@@ -166,7 +176,6 @@ void CPlayScene::_ParseSection_TILEMAP(std::string line)
 				
 				int posX = x * tileWidth;
 				int posY = (mapHeight - y) * tileHeight;
-				/*float posY = y * tileHeight;*/
 
 				/*DebugOut(L"index %d %d\n", tileX, tileY);*/
 				Vector2 position = Vector2(posX, posY);
@@ -200,15 +209,15 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	CGameObject* obj = NULL;
 
-	if (object_type == "obj-mario")
+	if (object_type == "obj-jason")
 	{
 		if (player != NULL)
 		{
 			DebugOut(L"[ERROR] MARIO object was created before!\n");
 			return;
 		}
-		obj = new CMario();
-		player = (CMario*)obj;
+		obj = new CJason();
+		player = (CJason*)obj;
 
 		DebugOut(L"[INFO] Player object created!\n");
 	}
@@ -241,14 +250,7 @@ void CPlayScene::Load()
 	// Init Camera
 	mainCam = new CCamera();
 	auto game = CGame::GetInstance();
-	mainCam->SetBoundingBoxSize(Vector2(game->GetScreenWidth() / 2, game->GetScreenHeight() / 2));
-	mainCam->SetBoundingBoxOffset(Vector2(game->GetScreenWidth() / 4, -game->GetScreenHeight() / 4));
-	mainCam->SetScale(Vector2(2.4f, 2.4f));
-
-	// Init Grid
-	int screenWidth = CGame::GetInstance()->GetScreenWidth();
-	int screenHeight = CGame::GetInstance()->GetScreenHeight();
-	grid = std::make_unique<CGrid>(screenWidth * 10, screenHeight * 3, CELL_SIZE);
+	mainCam->SetBoundingBoxSize(Vector2(game->GetScreenWidth(), game->GetScreenHeight()));
 
 	ifstream f;
 	f.open(sceneFilePath);
@@ -294,7 +296,7 @@ void CPlayScene::Load()
 
 void CPlayScene::PreUpdate()
 {
-	mainCam->Update();
+
 	grid->SetActiveCells(mainCam->GetBoundingBox());
 
 	UpdatePotentialObjects();
@@ -302,16 +304,17 @@ void CPlayScene::PreUpdate()
 
 void CPlayScene::UpdatePotentialObjects()
 {
-	potentials.clear();
+	onScreens.clear();
 
 	for (auto cell : grid->m_activeCells)
 	{
 		for (auto obj : cell->gameObjects)
-			potentials.push_back(obj);
+			onScreens.push_back(obj);
 	}
 
-	for (auto obj : objects)
+	for (auto obj : onScreens)
 	{
+		if (obj->GetColliders().at(0)->IsDynamic() == false) continue;
 		Cell* newCell = grid->GetCell(obj->GetPosition());
 		if (newCell != nullptr && newCell != obj->GetCell())
 		{
@@ -323,11 +326,13 @@ void CPlayScene::UpdatePotentialObjects()
 
 void CPlayScene::Update(DWORD dt)
 {
-	for (auto obj : objects)
-		if (obj->IsEnabled() == true) obj->PhysicsUpdate(&objects);
+	for (auto obj : onScreens)
+		if (obj->IsEnabled() == true) obj->PhysicsUpdate(&onScreens);
 	
-	for (auto obj : objects)
+	for (auto obj : onScreens)
 		if (obj->IsEnabled() == true) obj->Update(dt);
+
+	mainCam->Update();
 }
 
 void CPlayScene::Render()
@@ -335,14 +340,13 @@ void CPlayScene::Render()
 	for (auto tile : tilemap)
 		tile->Draw(255);
 
-	for (auto obj : objects)
+	for (auto obj : onScreens)
 		if (obj->IsEnabled() == true) obj->Render();
 
 	// RENDERING GIZMO
-	/*for (auto obj : potentials)
+	/*for (auto obj : onScreens)
 		if (obj->IsEnabled() == true) obj->RenderBoundingBox();*/
 
-	// TODO: Something wrong terribly
 	/*for (int i= 0; i < grid->m_cells.size(); i++)
 	{
 		int x = i % grid->m_numXCells;
@@ -350,7 +354,7 @@ void CPlayScene::Render()
 		grid->RenderBoundingBox(x, y);
 	}*/
 
-	mainCam->RenderBoundingBox();
+	/*mainCam->RenderBoundingBox();*/
 }
 
 /*
@@ -385,11 +389,11 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 
-	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
+	CJason* jason = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
-		mario->SetState(MARIO_STATE_JUMP);
+		jason->SetState(JASON_STATE_JUMP);
 		break;
 	/*case DIK_A:
 		mario->Reset();*/
@@ -402,14 +406,14 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 void CPlayScenceKeyHandler::KeyState(BYTE* states)
 {
 	auto game = CGame::GetInstance()->GetService<CInputHandler>();
-	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
+	CJason* jason = ((CPlayScene*)scence)->GetPlayer();
 
-	// disable control key when Mario die 
-	if (mario->GetState() == MARIO_STATE_DIE) return;
+	// disable control key when Jason die 
+	if (jason->GetState() == JASON_STATE_DIE) return;
 	if (game->IsKeyDown(DIK_RIGHT))
-		mario->SetState(MARIO_STATE_WALKING_RIGHT);
+		jason->SetState(JASON_STATE_WALK_RIGHT);
 	else if (game->IsKeyDown(DIK_LEFT))
-		mario->SetState(MARIO_STATE_WALKING_LEFT);
+		jason->SetState(JASON_STATE_WALK_LEFT);
 	else
-		mario->SetState(MARIO_STATE_IDLE);
+		jason->SetState(JASON_STATE_IDLE);
 }

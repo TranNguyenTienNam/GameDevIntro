@@ -1,16 +1,8 @@
 #include "Animations.h"
 #include "Brick.h"
 
-void CBrick::InitAnimations()
-{
-	auto animations = CGame::GetInstance()->GetService<CAnimations>();
-	AddAnimation("Brick", animations->Get("ani-brick"));
-}
-
 CBrick::CBrick() :CGameObject()
 {
-	InitAnimations();
-
 	// Init collider
 	auto collider = new CCollider2D;
 	collider->SetGameObject(this);
@@ -26,5 +18,5 @@ void CBrick::Update(DWORD dt)
 
 void CBrick::Render()
 {
-	animations.at("Brick")->Render(transform.position);
+	
 }

@@ -34,5 +34,5 @@ void CPortal::Render()
 	rect.right = boundingBox.right - boundingBox.left;
 	rect.bottom = boundingBox.top - boundingBox.bottom;
 
-	CGame::GetInstance()->Draw(p, bbox, rect.left, rect.top, rect.right, rect.bottom, 255);
+	CGame::GetInstance()->Draw(p, 1, bbox, rect.left, rect.top, rect.right, rect.bottom, 255);
 }

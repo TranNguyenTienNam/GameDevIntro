@@ -6,10 +6,10 @@
 #include "Scene.h"
 #include "GameObject.h"
 #include "InputHandler.h"
-#include "Mario.h"
 #include "Grid.h"
 #include "Camera.h"
 #include "Sprites.h"
+#include "Jason.h"
 
 const int CELL_SIZE = 128;
 
@@ -18,10 +18,10 @@ class CGameObject;
 class CPlayScene : public CScene
 {
 protected:
-	CMario* player;										// A play scene has to have player, right? 
+	CJason* player;										// A play scene has to have player, right? 
 	std::vector<CTile*> tilemap;
 	std::vector<CGameObject*> objects;
-	std::vector<CGameObject*> potentials, destroyed;
+	std::vector<CGameObject*> onScreens, destroyed;
 	std::unique_ptr<CGrid> grid;						// Grid for space partitioning for collision
 	CCamera* mainCam;
 
@@ -44,7 +44,7 @@ public:
 	virtual void Unload();
 	virtual void Clean();
 
-	CMario* GetPlayer() { return player; }
+	CJason* GetPlayer() { return player; }
 	CCamera* GetCamera() { return mainCam; }
 
 	//friend class CPlayScenceKeyHandler;

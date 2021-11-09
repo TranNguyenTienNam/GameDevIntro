@@ -52,6 +52,7 @@ public:
 		float& nx, float& ny);
 	void PhysicsUpdate(std::vector<CGameObject*>* coObjects);
 
+	bool IsDynamic() { return this->isDynamic; }
 	CGameObject* GetGameObject() { return this->object; }
 	void SetGameObject(CGameObject* gameObject) { this->object = gameObject; }
 

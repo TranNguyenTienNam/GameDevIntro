@@ -77,20 +77,20 @@ void CGrid::RemoveGameObjectFromCell(CGameObject* gameObject)
 
 void CGrid::RenderBoundingBox(int x, int y)
 {
-	D3DXVECTOR2 p(x * m_cellSize, y * m_cellSize);
+	Vector2 p(x * m_cellSize, y * m_cellSize);
 
 	LPDIRECT3DTEXTURE9 bbox = CGame::GetInstance()->GetService<CTextures>()->Get("tex-bbox");
 	LPDIRECT3DTEXTURE9 green_bbox = CGame::GetInstance()->GetService<CTextures>()->Get("tex-green-bbox");
 
 	RectF rect;
 	rect.left = 0;
-	rect.top = m_cellSize - 0.5;
+	rect.top = 0;
 	rect.right = m_cellSize - 0.5;
-	rect.bottom = 0;
+	rect.bottom = m_cellSize - 0.5;
 
-	if (GetCell(x,y)->isActive)
-		CGame::GetInstance()->Draw(p, green_bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
-	else CGame::GetInstance()->Draw(p, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+	if (GetCell(x, y)->isActive)
+		CGame::GetInstance()->Draw(p, 1, green_bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+	else CGame::GetInstance()->Draw(p, 1, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
 }
 
 void CGrid::SetActiveCells(RectF rect)
@@ -98,12 +98,8 @@ void CGrid::SetActiveCells(RectF rect)
 	m_activeCells.clear();
 
 	// [GIZMO] Unshow all cells 
-	for (int i = 0; i < m_cells.size(); i++)
-	{
-		int x = i % m_numXCells;
-		int y = i / m_numXCells;
-		GetCell(x, y)->isActive = false;
-	}
+	/*for (auto cell : m_cells)
+		cell.isActive = false;*/
 
 	int startX = floor(rect.left / m_cellSize);
 	int endX = floor(rect.right / m_cellSize);
@@ -116,9 +112,10 @@ void CGrid::SetActiveCells(RectF rect)
 		for (int y = startY; y <= endY; y++)
 		{
 			if (y < 0 || y >= m_numYCells) continue;
-			m_activeCells.push_back(GetCell(x, y));
+			auto cell = GetCell(x, y);
+			m_activeCells.push_back(cell);
 
-			GetCell(x, y)->isActive = true; // [GIZMO]
+			/*cell->isActive = true;*/ // [GIZMO]
 		}
 	}
 }

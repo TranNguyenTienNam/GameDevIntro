@@ -5,9 +5,6 @@
 
 class CBrick : public CGameObject
 {
-protected:
-	void InitAnimations();
-
 public:
 	CBrick();
 	void Update(DWORD dt);

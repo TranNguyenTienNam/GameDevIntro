@@ -36,11 +36,11 @@ void CGame::InitDirectX(HWND hWnd)
 	RECT r;
 	GetClientRect(hWnd, &r);
 
-	screen_width = r.right + 1;
-	screen_height = r.bottom + 1;
+	d3dpp.BackBufferHeight = r.bottom;
+	d3dpp.BackBufferWidth = r.right;
 
-	d3dpp.BackBufferHeight = screen_height;
-	d3dpp.BackBufferWidth = screen_width;
+	screen_height = r.bottom;
+	screen_width = r.right;
 
 	d3d->CreateDevice(
 		D3DADAPTER_DEFAULT,			// use default video card in the system, some systems have more than one video cards
@@ -70,11 +70,10 @@ void CGame::InitDirectX(HWND hWnd)
 	DebugOut(L"[INFO] InitDirectX OK\n");
 }
 
-void CGame::Draw(Vector2 position, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha)
+void CGame::Draw(Vector2 position, int nx, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha)
 {
 	auto camera = ((CPlayScene*)GetService<CScenes>()->GetCurrentScene())->GetCamera();
 	Vector2 camPos = camera->GetPosition();
-	Vector2 camScale = camera->GetScale();
 	Vector3 p = Vector3(0,0,0);
 
 	RECT r;
@@ -88,15 +87,15 @@ void CGame::Draw(Vector2 position, LPDIRECT3DTEXTURE9 texture, int left, int top
 	D3DXMATRIX mat;
 	D3DXMatrixIdentity(&mat);
 
+	// FlipX
+	D3DXMATRIX flipX;
+	D3DXMatrixScaling(&flipX, -nx, 1.0f, 1.0f);
+
 	// Translate
 	D3DXMATRIX translate;
-	D3DXMatrixTranslation(&translate, (position.x * camScale.x - camPos.x), (-position.y * camScale.y + camPos.y), 0.0f);
+	D3DXMatrixTranslation(&translate, (position.x - camPos.x), (-position.y + camPos.y), 0.0f);
 
-	// Scale
-	D3DXMATRIX scale;
-	D3DXMatrixScaling(&scale, camScale.x, camScale.y, 1.0f);
-	
-	mat *= scale;
+	mat *= flipX;
 	mat *= translate;
 	
 	spriteHandler->SetTransform(&mat);
@@ -175,7 +174,7 @@ void CGame::GameInit(HWND hWnd)
 	game->GetService<CInputHandler>()->SetHandleWindow(hWnd);
 	game->GetService<CInputHandler>()->Initialize();
 	game->AddService(new CScenes);
-	game->GetService<CScenes>()->Load(L"database\\mario-sample.txt");
+	game->GetService<CScenes>()->Load(L"database\\blaster-master.txt");
 }
 
 void CGame::GameRun()

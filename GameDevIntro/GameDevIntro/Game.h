@@ -10,9 +10,6 @@
 #include "Transform.h"
 #include "Scene.h"
 
-#define MISC_TEXTURE_PATH L"textures/misc.png"
-#define MARIO_TEXTURE_PATH L"textures/mario.png"
-
 #define MAX_FRAME_RATE 120
 
 class CGameObject;
@@ -41,7 +38,7 @@ public:
 
 	void InitDirectX(HWND hWnd);
 
-	void Draw(Vector2 position, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha);
+	void Draw(Vector2 position, int nx, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha);
 	LPDIRECT3DTEXTURE9 LoadTexture(LPCWSTR texturePath, D3DCOLOR transparentColor);
 
 	LPDIRECT3DDEVICE9 GetDirect3DDevice() { return this->d3ddv; }

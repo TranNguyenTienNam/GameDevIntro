@@ -2,10 +2,11 @@
 #include "Game.h"
 #include "Scenes.h"
 #include "PlayScene.h"
+#include "Utils.h"
 
-Vector3 CCamera::WorldToScreenPoint(Vector2 pos)
+Vector2 CCamera::WorldToScreenPoint(Vector2 pos)
 {
-	return Vector3(floor(pos.x - transform.position.x), floor(-pos.y + transform.position.y), 0);
+	return Vector2(floor(pos.x - position.x), floor(-pos.y + position.y));
 }
 
 CCamera::CCamera()
@@ -18,31 +19,51 @@ CCamera::~CCamera()
 
 RectF CCamera::GetBoundingBox()
 {
-	Vector2 posBB = transform.position + bbOffset;
 	RectF boundingBox;
-	boundingBox.left = posBB.x;
-	boundingBox.top = posBB.y;
-	boundingBox.right = posBB.x + bbSize.x;
-	boundingBox.bottom = posBB.y - bbSize.y;
+	boundingBox.left = position.x;
+	boundingBox.top = position.y;
+	boundingBox.right = position.x + bbSize.x;
+	boundingBox.bottom = position.y  - bbSize.y;
 	return boundingBox;
 }
 
 void CCamera::Update()
 {
 	auto game = CGame::GetInstance();
-	auto posPlayer = ((CPlayScene*)game->GetService<CScenes>()->GetCurrentScene())->GetPlayer()->GetPosition();
-	
-	float x = posPlayer.x * transform.scale.x - game->GetScreenWidth() / 2;
-	float y = posPlayer.y * transform.scale.y + game->GetScreenHeight() / 2;
-	transform.position = Vector2(x, y);
+	auto posPlayer = ((CPlayScene*)game->GetService<CScenes>()->GetCurrentScene())->GetPlayer()->GetPosition(); // target
 
-	/*camPos.x = camPos.x < 0 ? 0 : camPos.x;
-	camPos.y = camPos.y < 0 ? 0 : camPos.y;*/
+	Vector2 vpPlayer = WorldToScreenPoint(posPlayer);
+	DebugOut(L"wp %f %f\n", posPlayer.x, posPlayer.y);
+	DebugOut(L"vp %f %f\n", vpPlayer.x, vpPlayer.y);
+
+	position.x = posPlayer.x - bbSize.x / 2;
+	position.y = posPlayer.y + bbSize.y / 2;
+	
+	if (vpPlayer.x <= 48 || vpPlayer.x >= 208)
+		position.x = posPlayer.x - bbSize.x / 2;
+	if (vpPlayer.y <= 64 || vpPlayer.y >= 192)
+		position.y = posPlayer.y + bbSize.y / 2;
+
+	// Camera co 2 kieu: static va follow target
+	// Static la camera khong chuyen dong khi target di chuyen trong mot rect nhat dinh 
+	// vpPlayer.x <= 48 || vpPlayer.x >= 208 (3 tile left right) (goi tat Viewport player)
+	// vpPlayer.y <= 64 || vpPlayer.y >= 192 (4 tile bottom top)
+
+	// Boundary block
+	if (position.x <= boundary.left)
+		position.x = boundary.left;
+	if (position.y >= boundary.top)
+		position.y = boundary.top;
+	if (position.x + bbSize.x >= boundary.right)
+		position.x = boundary.right - bbSize.x;
+	if (position.y - bbSize.y <= boundary.bottom)
+		position.y = boundary.bottom + bbSize.y;
 }
 
 void CCamera::RenderBoundingBox()
 {
-	LPDIRECT3DTEXTURE9 blue_bbox = CGame::GetInstance()->GetService<CTextures>()->Get("tex-bbox");
+	LPDIRECT3DTEXTURE9 bbox = CGame::GetInstance()->GetService<CTextures>()->Get("tex-green-bbox");
+	Vector2 translate_pivot = Vector2(bbSize.x / 2, -bbSize.y / 2);
 
 	RectF rect;
 	rect.left = 0;
@@ -50,5 +71,5 @@ void CCamera::RenderBoundingBox()
 	rect.right = bbSize.x;
 	rect.bottom = bbSize.y;
 
-	CGame::GetInstance()->Draw(transform.position + bbOffset, blue_bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+	CGame::GetInstance()->Draw(position + translate_pivot, 1, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
 }
