@@ -15,6 +15,18 @@ Vector2 NormalizedVector()
 	return Vector2(1.0f, 1.0f);
 }
 
+RectF::RectF()
+{
+}
+
+bool RectF::Equal(const RectF& other)
+{
+	if (this->left == other.left && this->top == other.top &&
+		this->right == other.right && this->bottom == other.bottom)
+		return true;
+	else return false;
+}
+
 bool RectF::Overlap(const RectF& other)
 {
 	if (this->right <= other.left || this->left >= other.right)

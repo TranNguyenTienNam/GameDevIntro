@@ -6,7 +6,18 @@
 
 Vector2 CCamera::WorldToScreenPoint(Vector2 pos)
 {
-	return Vector2(floor(pos.x - position.x), floor(-pos.y + position.y));
+	Vector3 p = Vector3(0, 0, 0);
+
+	D3DXMATRIX mat;
+	D3DXMatrixIdentity(&mat);
+
+	// Translate
+	D3DXMATRIX translate;
+	D3DXMatrixTranslation(&translate, (pos.x - position.x), (-pos.y + position.y), 0.0f);
+
+	mat *= translate;
+
+	return Vector2(mat._41, mat._42);
 }
 
 CCamera::CCamera()
@@ -29,20 +40,26 @@ RectF CCamera::GetBoundingBox()
 
 void CCamera::Update()
 {
-	auto game = CGame::GetInstance();
-	auto posPlayer = ((CPlayScene*)game->GetService<CScenes>()->GetCurrentScene())->GetPlayer()->GetPosition(); // target
+	Vector2 posTarget = target->GetPosition();
 
-	Vector2 vpPlayer = WorldToScreenPoint(posPlayer);
-	DebugOut(L"wp %f %f\n", posPlayer.x, posPlayer.y);
-	DebugOut(L"vp %f %f\n", vpPlayer.x, vpPlayer.y);
+	Vector2 vpPlayer = WorldToScreenPoint(posTarget);
+	/*DebugOut(L"wp %f %f\n", posTarget.x, posTarget.y);
+	DebugOut(L"vp %f %f\n", vpPlayer.x, vpPlayer.y);*/
 
-	position.x = posPlayer.x - bbSize.x / 2;
-	position.y = posPlayer.y + bbSize.y / 2;
-	
-	if (vpPlayer.x <= 48 || vpPlayer.x >= 208)
-		position.x = posPlayer.x - bbSize.x / 2;
-	if (vpPlayer.y <= 64 || vpPlayer.y >= 192)
-		position.y = posPlayer.y + bbSize.y / 2;
+	position.x = (int)(posTarget.x - bbSize.x / 2);
+	position.y = (int)(posTarget.y + bbSize.y / 2);
+
+	//if (position.x == NULL) position.x = posTarget.x - bbSize.x / 2;
+	//position.y = posTarget.y + bbSize.y / 2;
+	//// static camera
+	//if (vpPlayer.x >= 48)
+	//	position.x = posTarget.x + vpPlayer.x - bbSize.x / 2;
+	//else if (vpPlayer.x >= 208 && vpPlayer.x <= bbSize.x)
+	//	position.x = posTarget.x + vpPlayer.x - bbSize.x / 2;
+	//else position.x = position.x;
+
+	//if (vpPlayer.y >= 64 && vpPlayer.y <= 192)
+	//	position.y = posTarget.y + bbSize.y / 2;
 
 	// Camera co 2 kieu: static va follow target
 	// Static la camera khong chuyen dong khi target di chuyen trong mot rect nhat dinh 

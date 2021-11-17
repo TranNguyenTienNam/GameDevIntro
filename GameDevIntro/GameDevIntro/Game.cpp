@@ -74,7 +74,7 @@ void CGame::Draw(Vector2 position, int nx, LPDIRECT3DTEXTURE9 texture, int left,
 {
 	auto camera = ((CPlayScene*)GetService<CScenes>()->GetCurrentScene())->GetCamera();
 	Vector2 camPos = camera->GetPosition();
-	Vector3 p = Vector3(0,0,0);
+	RectF camRect = camera->GetBoundingBox();
 
 	RECT r;
 	r.left = left;
@@ -100,7 +100,7 @@ void CGame::Draw(Vector2 position, int nx, LPDIRECT3DTEXTURE9 texture, int left,
 	
 	spriteHandler->SetTransform(&mat);
 
-	spriteHandler->Draw(texture, &r, &center, &p, D3DCOLOR_ARGB(alpha, 255, 255, 255));
+	spriteHandler->Draw(texture, &r, &center, NULL, D3DCOLOR_ARGB(alpha, 255, 255, 255));
 }
 
 LPDIRECT3DTEXTURE9 CGame::LoadTexture(LPCWSTR texturePath, D3DCOLOR transparentColor)

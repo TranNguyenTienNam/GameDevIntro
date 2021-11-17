@@ -1,5 +1,7 @@
 #include "Jason.h"
 #include "Animations.h"
+#include "Portal.h"
+#include "Scenes.h"
 
 void CJason::InitAnimations()
 {
@@ -32,7 +34,15 @@ CJason::~CJason()
 
 void CJason::Update(DWORD dt)
 {
-
+	if (velocity.x > JASON_WALKING_SPEED) velocity.x = JASON_WALKING_SPEED;
+	else if (velocity.x < -JASON_WALKING_SPEED) velocity.x = - JASON_WALKING_SPEED;
+	/*if (abs(velocity.x) - 0.0001f * dt < 0) velocity.x = 0;*/
+	if (state == JASON_STATE_IDLE)
+	{
+		/*if (velocity.x * acceleration.x < 0)
+			if (acceleration.x < 0 && velocity.x < 0) velocity.x = 0;
+			else*/
+	}
 }
 
 void CJason::Render()
@@ -50,15 +60,18 @@ void CJason::SetState(int state)
 	{
 	case JASON_STATE_WALK_RIGHT:
 		velocity.x = JASON_WALKING_SPEED;
+		/*acceleration.x = 0.0002f;*/
 		nx = 1;
 		break;
 	case JASON_STATE_WALK_LEFT:
 		velocity.x = -JASON_WALKING_SPEED;
+		/*acceleration.x = -0.0002f;*/
 		nx = -1;
 		break;
 	case JASON_STATE_JUMP:
 		velocity.y = JASON_JUMP_SPEED_Y;
 	case JASON_STATE_IDLE:
+		acceleration.x = 0;
 		velocity.x = 0;
 		break;
 	}
@@ -66,7 +79,7 @@ void CJason::SetState(int state)
 
 void CJason::OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions)
 {
-	/*for (UINT i = 0; i < collisions.size(); i++)
+	for (UINT i = 0; i < collisions.size(); i++)
 	{
 		LPCOLLISIONEVENT e = collisions[i];
 
@@ -76,7 +89,7 @@ void CJason::OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionE
 			CGame::GetInstance()->GetService<CScenes>()->SwitchScene(p->GetSceneId());
 			return;
 		}
-	}*/
+	}
 }
 
 void CJason::OnTriggerEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions)

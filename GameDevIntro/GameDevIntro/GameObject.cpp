@@ -7,6 +7,7 @@ CGameObject::CGameObject()
 	nx = 1;
 	transform.position = VectorZero();
 	velocity = VectorZero();
+	acceleration = VectorZero();
 }
 
 CGameObject::~CGameObject()

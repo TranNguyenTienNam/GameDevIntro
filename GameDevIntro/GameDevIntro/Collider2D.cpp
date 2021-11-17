@@ -1,6 +1,7 @@
 #include <algorithm>    
 #include "Collider2D.h"
 #include "Utils.h"
+#include "Jason.h"
 
 void CCollider2D::SweptAABB(
 	RectF movingRect, RectF staticRect,
@@ -192,14 +193,16 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 	auto dt = CGame::GetDeltaTime();
 	auto pos = object->GetPosition();
 	auto velocity = object->GetVelocity();
+	auto acceleration = object->GetAcceleration();
 
 	// TODO: Change uniform motion into uniformly accelerated motion
 	this->dx = velocity.x * dt;
 	this->dy = velocity.y * dt;
 
-	/*velocity.x += acceleration * dt;*/
-	velocity.y += -0.0026f * dt; // TODO: Need to adjust gravity by mass
+	velocity.x += acceleration.x * dt;
+	velocity.y += -0.0026f * dt; // TODO: Need to adjust gravity
 	object->SetVelocity(velocity);
+	/*if (dynamic_cast<CJason*>(object)) DebugOut(L"v %f\n", velocity.x);*/
 
 	coEvents.clear();
 
@@ -209,7 +212,7 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 	{
 		pos.x += dx;
 		pos.y += dy;
-		if (pos.y < 0) pos.y = 0; // TODO: Limit fall
+		if (pos.y < 0) pos.y = 0;
 		object->SetPosition(pos);
 	}
 	else
@@ -226,7 +229,6 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 			pos.y += min_ty * dy + ny * 0.4f;
 			object->SetPosition(pos);
 
-			// TODO: Upgrade if game has more physics material
 			if (nx != 0) velocity.x = 0;
 			if (ny != 0) velocity.y = 0;
 			object->SetVelocity(velocity);

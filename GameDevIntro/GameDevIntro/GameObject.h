@@ -8,8 +8,11 @@
 #include "Animation.h"
 #include "Collider2D.h"
 #include "Transform.h"
+#include "Quadtree.h"
 
 struct Cell;
+
+class CQuadtree;
 class CCollider2D;
 struct CCollisionEvent;
 
@@ -17,13 +20,21 @@ class CGameObject
 {
 protected:
 	bool isEnabled;
+
 	Transform transform;
-	Vector2 velocity;
-	int nx;
-	int state;
 	std::vector<CCollider2D*>  colliders;
-	Cell* ownerCell;
-	int cellVectorIndex = -1;
+
+	int nx;
+	Vector2 velocity;
+	Vector2 acceleration;
+	int state;
+
+	Cell* ownerCell;				// Grid
+	int cellVectorIndex = -1;		//
+
+	CQuadtree* ownerQuadtree;		// Quadtree
+	int inNodesIndex = -1;			//
+
 	std::unordered_map<std::string, LPANIMATION> animations;
 public:
 	CGameObject();
@@ -35,15 +46,29 @@ public:
 	Vector2 GetPosition() { return this->transform.position; }
 	void SetVelocity(Vector2 v) { this->velocity = v; }
 	Vector2 GetVelocity() { return this->velocity; }
+	void SetAcceleration(Vector2 a) { this->acceleration = a; }
+	Vector2 GetAcceleration() { return this->acceleration; }
+
 	int GetState() { return this->state; }
 	void SetState(int state) { this->state = state; }
+
 	std::vector<CCollider2D*> GetColliders() { return this->colliders; }
+	void SetColliders(std::vector<CCollider2D*> colliders) { this->colliders = colliders; }
+
+	CQuadtree* GetQuadtree() { return this->ownerQuadtree; }
+	void SetQuadtree(CQuadtree* quadtree) { this->ownerQuadtree = quadtree; }
+	int GetInNodesIndex() { return this->inNodesIndex; }
+	void SetInNodesIndex(int index) { this->inNodesIndex = index; }
+
+#pragma region Grid Space Partitioning
 	void SetCell(Cell* cell) { this->ownerCell = cell; }
 	Cell* GetCell() { return this->ownerCell; }
 	void SetCellVectorIndex(int index) { this->cellVectorIndex = index; }
 	int GetCellVectorIndex() { return this->cellVectorIndex; }
+#pragma endregion
 
 	void AddAnimation(std::string stateName, LPANIMATION animation);
+	std::unordered_map<std::string, LPANIMATION> GetAnimations() { return this->animations; }
 
 	virtual void PhysicsUpdate(std::vector<CGameObject*>* coObjects);
 	virtual void Update(DWORD dt) = 0;

@@ -10,6 +10,7 @@
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/filereadstream.h"
 
+#include "Sophia.h"
 #include "Portal.h"
 #include "Brick.h"
 
@@ -135,6 +136,7 @@ void CPlayScene::_ParseSection_TILEMAP(std::string line)
 	int mapWidth = d["width"].GetInt();			// Calculate by tile
 	int mapHeight = d["height"].GetInt();
 
+	// Set boundary of camera
 	RectF boundary; // TODO: Sua lai cac con so thanh const
 	boundary.left = -8;
 	boundary.top = mapHeight * tileHeight + 8;
@@ -143,14 +145,17 @@ void CPlayScene::_ParseSection_TILEMAP(std::string line)
 	mainCam->GetBoundary(boundary);
 
 	// Init Grid
-	grid = std::make_unique<CGrid>(mapWidth * tileWidth, mapHeight * tileHeight, CELL_SIZE);
+	m_mapWidth = mapWidth * tileWidth;
+	m_mapHeight = mapHeight * tileHeight;
+	quadtree = new CQuadtree(0, RectF(0, m_mapHeight, m_mapWidth, 0));
+	quadtree->Reset(m_mapWidth, m_mapHeight);
 	
 	// Tileset texture settings
 	int columns = d["tilesets"].GetArray()[0]["columns"].GetInt();
 	int spacing = d["tilesets"].GetArray()[0]["spacing"].GetInt();
 	auto image_path = ToWSTR(d["tilesets"].GetArray()[0]["image"].GetString());
 	
-	CGame::GetInstance()->GetService<CTextures>()->Add("tex-tileset", image_path.c_str(), D3DCOLOR_XRGB(0, 0, 0));
+	/*CGame::GetInstance()->GetService<CTextures>()->Add("tex-tileset", image_path.c_str(), D3DCOLOR_XRGB(0, 0, 0));*/
 
 	auto layers = d["layers"].GetArray();
 
@@ -218,9 +223,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		}
 		obj = new CJason();
 		player = (CJason*)obj;
+		mainCam->SetTarget(player);
 
 		DebugOut(L"[INFO] Player object created!\n");
 	}
+	else if (object_type == "obj-sophia") obj = new CSophia();
 	else if (object_type == "obj-brick") obj = new CBrick();
 	else if (object_type == "obj-portal")
 	{
@@ -240,16 +247,17 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	obj->SetPosition(pos);
 	objects.push_back(obj);
 
-	grid->AddGameObject(obj);
+	quadtree->Insert(obj);
 }
 
 void CPlayScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
 
+	auto game = CGame::GetInstance();
+
 	// Init Camera
 	mainCam = new CCamera();
-	auto game = CGame::GetInstance();
 	mainCam->SetBoundingBoxSize(Vector2(game->GetScreenWidth(), game->GetScreenHeight()));
 
 	ifstream f;
@@ -296,43 +304,40 @@ void CPlayScene::Load()
 
 void CPlayScene::PreUpdate()
 {
-
-	grid->SetActiveCells(mainCam->GetBoundingBox());
-
 	UpdatePotentialObjects();
 }
 
 void CPlayScene::UpdatePotentialObjects()
 {
-	onScreens.clear();
-
-	for (auto cell : grid->m_activeCells)
+	RectF bbMainCam = mainCam->GetBoundingBox();
+	onScreenTilemap.clear();
+	for (auto tile : tilemap)
 	{
-		for (auto obj : cell->gameObjects)
-			onScreens.push_back(obj);
+		Vector2 tilePos = tile->GetPosition();
+		RectF tileBox;
+		tileBox.left = tilePos.x - 8;
+		tileBox.top = tilePos.y + 8;
+		tileBox.right = tilePos.x + 8;
+		tileBox.bottom = tilePos.y - 8;
+		if (bbMainCam.Contain(tilePos) || bbMainCam.Overlap(tileBox))
+			onScreenTilemap.push_back(tile);
 	}
 
-	for (auto obj : onScreens)
-	{
-		if (obj->GetColliders().at(0)->IsDynamic() == false) continue;
-		Cell* newCell = grid->GetCell(obj->GetPosition());
-		if (newCell != nullptr && newCell != obj->GetCell())
-		{
-			grid->RemoveGameObjectFromCell(obj);
-			grid->AddGameObject(obj, newCell);
-		}
-	}
+	potentials.clear();
+	quadtree->Update(objects);
+	quadtree->Retrieve(potentials, bbMainCam);
+	DebugOut(L"potentials %d\n", potentials.size());
 }
 
 void CPlayScene::Update(DWORD dt)
 {
-	for (auto obj : onScreens)
-		if (obj->IsEnabled() == true) obj->PhysicsUpdate(&onScreens);
+	for (auto obj : potentials)
+		if (obj->IsEnabled() == true) obj->PhysicsUpdate(&potentials);
 	
-	for (auto obj : onScreens)
+	for (auto obj : potentials)
 		if (obj->IsEnabled() == true) obj->Update(dt);
 
-	mainCam->Update();
+	if (mainCam != nullptr) mainCam->Update();
 }
 
 void CPlayScene::Render()
@@ -340,21 +345,12 @@ void CPlayScene::Render()
 	for (auto tile : tilemap)
 		tile->Draw(255);
 
-	for (auto obj : onScreens)
+	for (auto obj : potentials)
 		if (obj->IsEnabled() == true) obj->Render();
 
 	// RENDERING GIZMO
-	/*for (auto obj : onScreens)
-		if (obj->IsEnabled() == true) obj->RenderBoundingBox();*/
-
-	/*for (int i= 0; i < grid->m_cells.size(); i++)
-	{
-		int x = i % grid->m_numXCells;
-		int y = i / grid->m_numXCells;
-		grid->RenderBoundingBox(x, y);
-	}*/
-
-	/*mainCam->RenderBoundingBox();*/
+	for (auto obj : potentials)
+		if (obj->IsEnabled() == true) obj->RenderBoundingBox();
 }
 
 /*
@@ -362,16 +358,25 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
+	for (auto tile : tilemap)
+		delete tile;
+	tilemap.clear();
+	 
 	for (auto obj : objects)
 		obj->Disable();
-
 	objects.clear();
 
 	player = NULL;
-	grid.reset();
+	
+	if (quadtree != nullptr)
+	{
+		delete quadtree;
+		quadtree = nullptr;
+	}
 	
 	if (mainCam != nullptr)
 	{
+		/*mainCam->SetTarget(NULL);*/
 		delete mainCam;
 		mainCam = nullptr;
 	}
@@ -392,7 +397,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	CJason* jason = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
-	case DIK_SPACE:
+	case DIK_X:
 		jason->SetState(JASON_STATE_JUMP);
 		break;
 	/*case DIK_A:

@@ -39,6 +39,7 @@ protected:
 	Vector2 position;
 public:
 	CTile(Vector2 pos, int left, int top, int width, int height, LPDIRECT3DTEXTURE9 texture);
+	Vector2 GetPosition() { return position; }
 	void Draw(int alpha);
 };
 

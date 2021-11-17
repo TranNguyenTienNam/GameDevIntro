@@ -13,19 +13,40 @@ void CAnimation::Render(Vector2 position, int nx, int alpha)
 {
 	DWORD now = GetTickCount();
 
-	if (currentFrame == -1)
+	if (isReversed == false)
 	{
-		currentFrame = 0;
-		lastFrameTime = now;
+		if (currentFrame == -1)
+		{
+			currentFrame = 0;
+			lastFrameTime = now;
+		}
+		else
+		{
+			DWORD t = frames[currentFrame]->GetTime();
+			if (now - lastFrameTime > t)
+			{
+				if (isPaused == false) currentFrame++;
+				lastFrameTime = now;
+				if (isLooped == true && currentFrame == frames.size()) currentFrame = 0;
+			}
+		}
 	}
 	else
 	{
-		DWORD t = frames[currentFrame]->GetTime();
-		if (now - lastFrameTime > t)
+		if (currentFrame == -1)
 		{
-			currentFrame++;
+			currentFrame = frames.size() - 1;
 			lastFrameTime = now;
-			if (currentFrame == frames.size()) currentFrame = 0; // TODO: IsLoop?
+		}
+		else
+		{
+			DWORD t = frames[currentFrame]->GetTime();
+			if (now - lastFrameTime > t)
+			{
+				if (isPaused == false) currentFrame--;
+				lastFrameTime = now;
+				if (isLooped == true && currentFrame == -1) currentFrame = frames.size() - 1;
+			}
 		}
 	}
 

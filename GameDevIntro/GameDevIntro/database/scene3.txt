@@ -4,7 +4,8 @@
 # id	file_path	transparent_color_r	g	b
 [TEXTURES]
 tex-player	textures\player.png	0	57	115
-tex-tileset	textures\tileset.png	0	0	0
+tex-mario	textures\mario.png	255	255	255
+tex-misc	textures\misc.png	176	224	248
 
 # id			left	top	width	height	texture_id
 [SPRITES]
@@ -50,7 +51,7 @@ ani-jason-crouch	spr-jason-crouch-0	100	spr-jason-crouch-1	100
 ani-jason-lie	spr-jason-lie	100
 
 [TILEMAP]
-map\sectionA.json
+map\sectionC.json
 
 [OBJECTS]
 # type		x	y
@@ -142,4 +143,4 @@ obj-brick	208	128
 
 # --- SCENE PORTAL ----
 # type		x	y	w	h	scene_id
-obj-portal	48	80	32	16	2
+#obj-portal	0	130	20	40	2

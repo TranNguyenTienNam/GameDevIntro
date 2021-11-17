@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "Sprites.h"
 #include "Jason.h"
+#include "Quadtree.h"
 
 const int CELL_SIZE = 128;
 
@@ -18,12 +19,16 @@ class CGameObject;
 class CPlayScene : public CScene
 {
 protected:
-	CJason* player;										// A play scene has to have player, right? 
+	CJason* player;											// A play scene has to have player, right? 
 	std::vector<CTile*> tilemap;
+	std::vector<CTile*> onScreenTilemap;
 	std::vector<CGameObject*> objects;
-	std::vector<CGameObject*> onScreens, destroyed;
-	std::unique_ptr<CGrid> grid;						// Grid for space partitioning for collision
+	std::vector<CGameObject*> potentials, destroyed;
+	CQuadtree* quadtree;					// Quadtree for space partitioning
 	CCamera* mainCam;
+
+	float m_mapWidth;
+	float m_mapHeight;
 
 	void _ParseSection_BACKGROUND_COLOR(std::string line);
 	void _ParseSection_TEXTURES(std::string line);

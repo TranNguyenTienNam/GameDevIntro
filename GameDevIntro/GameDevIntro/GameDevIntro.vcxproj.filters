@@ -52,6 +52,18 @@
     <Filter Include="Game Source\Game Objects\Enemy">
       <UniqueIdentifier>{552691ea-5a9a-4969-8356-7c730a29a44e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Source\Game Objects\Player\Sophia">
+      <UniqueIdentifier>{8d3be7bc-c5cb-4fec-9533-8a5f6e6e25ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Source\Game Objects\Player\Sophia\Direction State">
+      <UniqueIdentifier>{fb2e73ba-4df8-473e-8a1a-d486faed8564}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Source\Game Objects\Player\Sophia\Wheel State">
+      <UniqueIdentifier>{d0c5a867-e3a6-44f6-ada1-f5649f78aac8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Source\Game Objects\Player\Jason">
+      <UniqueIdentifier>{0d1f125f-c43a-4ee2-886b-fad32feea826}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -111,12 +123,6 @@
     <ClInclude Include="PlayScene.h">
       <Filter>Framework\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Jason.h">
-      <Filter>Game Source\Game Objects\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Sophia.h">
-      <Filter>Game Source\Game Objects\Player</Filter>
-    </ClInclude>
     <ClInclude Include="BigJason.h">
       <Filter>Game Source\Game Objects\Player</Filter>
     </ClInclude>
@@ -125,6 +131,36 @@
     </ClInclude>
     <ClInclude Include="Portal.h">
       <Filter>Game Source\Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Quadtree.h">
+      <Filter>Framework\Space partition</Filter>
+    </ClInclude>
+    <ClInclude Include="Sophia.h">
+      <Filter>Game Source\Game Objects\Player\Sophia</Filter>
+    </ClInclude>
+    <ClInclude Include="SophiaState.h">
+      <Filter>Game Source\Game Objects\Player\Sophia</Filter>
+    </ClInclude>
+    <ClInclude Include="ClockwiseState.h">
+      <Filter>Game Source\Game Objects\Player\Sophia\Wheel State</Filter>
+    </ClInclude>
+    <ClInclude Include="CounterclockwiseState.h">
+      <Filter>Game Source\Game Objects\Player\Sophia\Wheel State</Filter>
+    </ClInclude>
+    <ClInclude Include="WheelIdleState.h">
+      <Filter>Game Source\Game Objects\Player\Sophia\Wheel State</Filter>
+    </ClInclude>
+    <ClInclude Include="SophiaIdleState.h">
+      <Filter>Game Source\Game Objects\Player\Sophia\Direction State</Filter>
+    </ClInclude>
+    <ClInclude Include="SophiaUpward45State.h">
+      <Filter>Game Source\Game Objects\Player\Sophia\Direction State</Filter>
+    </ClInclude>
+    <ClInclude Include="SophiaUpwardState.h">
+      <Filter>Game Source\Game Objects\Player\Sophia\Direction State</Filter>
+    </ClInclude>
+    <ClInclude Include="Jason.h">
+      <Filter>Game Source\Game Objects\Player\Jason</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -182,17 +218,41 @@
     <ClCompile Include="PlayScene.cpp">
       <Filter>Framework\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Sophia.cpp">
-      <Filter>Game Source\Game Objects\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Jason.cpp">
-      <Filter>Game Source\Game Objects\Player</Filter>
-    </ClCompile>
     <ClCompile Include="Brick.cpp">
       <Filter>Game Source\Game Objects</Filter>
     </ClCompile>
     <ClCompile Include="Portal.cpp">
       <Filter>Game Source\Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Quadtree.cpp">
+      <Filter>Framework\Space partition</Filter>
+    </ClCompile>
+    <ClCompile Include="Sophia.cpp">
+      <Filter>Game Source\Game Objects\Player\Sophia</Filter>
+    </ClCompile>
+    <ClCompile Include="SophiaState.cpp">
+      <Filter>Game Source\Game Objects\Player\Sophia</Filter>
+    </ClCompile>
+    <ClCompile Include="ClockwiseState.cpp">
+      <Filter>Game Source\Game Objects\Player\Sophia\Wheel State</Filter>
+    </ClCompile>
+    <ClCompile Include="CounterclockwiseState.cpp">
+      <Filter>Game Source\Game Objects\Player\Sophia\Wheel State</Filter>
+    </ClCompile>
+    <ClCompile Include="WheelIdleState.cpp">
+      <Filter>Game Source\Game Objects\Player\Sophia\Wheel State</Filter>
+    </ClCompile>
+    <ClCompile Include="SophiaIdleState.cpp">
+      <Filter>Game Source\Game Objects\Player\Sophia\Direction State</Filter>
+    </ClCompile>
+    <ClCompile Include="SophiaUpward45State.cpp">
+      <Filter>Game Source\Game Objects\Player\Sophia\Direction State</Filter>
+    </ClCompile>
+    <ClCompile Include="SophiaUpwardState.cpp">
+      <Filter>Game Source\Game Objects\Player\Sophia\Direction State</Filter>
+    </ClCompile>
+    <ClCompile Include="Jason.cpp">
+      <Filter>Game Source\Game Objects\Player\Jason</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
