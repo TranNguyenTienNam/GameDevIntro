@@ -397,11 +397,6 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	CJason* jason = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
-	case DIK_X:
-		jason->SetState(JASON_STATE_JUMP);
-		break;
-	/*case DIK_A:
-		mario->Reset();*/
 	case DIK_A:
 		CGame::GetInstance()->GetService<CScenes>()->SwitchScene(1);
 		break;
@@ -410,15 +405,5 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 
 void CPlayScenceKeyHandler::KeyState(BYTE* states)
 {
-	auto game = CGame::GetInstance()->GetService<CInputHandler>();
-	CJason* jason = ((CPlayScene*)scence)->GetPlayer();
-
-	// disable control key when Jason die 
-	if (jason->GetState() == JASON_STATE_DIE) return;
-	if (game->IsKeyDown(DIK_RIGHT))
-		jason->SetState(JASON_STATE_WALK_RIGHT);
-	else if (game->IsKeyDown(DIK_LEFT))
-		jason->SetState(JASON_STATE_WALK_LEFT);
-	else
-		jason->SetState(JASON_STATE_IDLE);
+	
 }

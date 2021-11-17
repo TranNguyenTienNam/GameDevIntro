@@ -28,7 +28,7 @@ class CSprites : public CService
 	std::unordered_map<std::string, LPSPRITE> sprites;
 
 public:
-	void Add(std::string id, int left, int top, int right, int bottom, LPDIRECT3DTEXTURE9 texture);
+	void Add(std::string id, int left, int width, int height, int bottom, LPDIRECT3DTEXTURE9 texture);
 	LPSPRITE Get(std::string id);
 	void Clear();
 };

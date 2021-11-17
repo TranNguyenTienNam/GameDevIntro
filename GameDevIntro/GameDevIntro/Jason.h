@@ -17,18 +17,30 @@
 #define JASON_WIDTH 8.0f
 #define JASON_HEIGHT 16.0f
 
+enum JasonState
+{
+	JASON_IDLE,
+	JASON_WALKING_LEFT,
+	JASON_WALKING_RIGHT,
+	JASON_JUMPING
+};
+
 class CJason : public CGameObject
 {
+private:
+	bool onGround;
+	JasonState state;
+	LPANIMATION animation;
 protected:
 	void InitAnimations();
-
 public:
 	CJason();
 	~CJason();
 
+	void SetState(JasonState state);
+
 	void Update(DWORD dt);
 	void Render();
-	void SetState(int state);
 
 	void OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions);
 	void OnTriggerEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions);
