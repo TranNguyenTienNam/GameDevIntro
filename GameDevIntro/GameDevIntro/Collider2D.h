@@ -53,6 +53,8 @@ public:
 	void PhysicsUpdate(std::vector<CGameObject*>* coObjects);
 
 	bool IsDynamic() { return this->isDynamic; }
+	void SetDynamic(bool value) { this->isDynamic = value; }
+	void SetTrigger(bool value) { this->isTrigger = value; }
 	CGameObject* GetGameObject() { return this->object; }
 	void SetGameObject(CGameObject* gameObject) { this->object = gameObject; }
 
@@ -61,6 +63,4 @@ public:
 	RectF GetBoundingBox();
 	void SetBoundingBox(const RectF& boundingBox) { this->boundingBox = boundingBox; }
 	void RenderBoundingBox();
-
-	void SetDynamic() { this->isDynamic = true; }
 };

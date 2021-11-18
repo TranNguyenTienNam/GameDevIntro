@@ -9,7 +9,6 @@
 #include "Grid.h"
 #include "Camera.h"
 #include "Sprites.h"
-#include "Jason.h"
 #include "Quadtree.h"
 
 const int CELL_SIZE = 128;
@@ -19,7 +18,7 @@ class CGameObject;
 class CPlayScene : public CScene
 {
 protected:
-	CJason* player;											// A play scene has to have player, right? 
+	CGameObject* player;											// A play scene has to have player, right? 
 	std::vector<CTile*> tilemap;
 	std::vector<CTile*> onScreenTilemap;
 	std::vector<CGameObject*> objects;
@@ -43,13 +42,15 @@ public:
 
 	virtual void Load();
 	virtual void PreUpdate();
-	virtual void UpdatePotentialObjects();
+	virtual void UpdateOnScreenTiles(RectF rect);
+	virtual void UpdatePotentialObjects(RectF rect);
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
 	virtual void Clean();
 
-	CJason* GetPlayer() { return player; }
+	CGameObject* GetPlayer() { return player; }
+	void SetPlayer(CGameObject* object) { this->player = object; }
 	CCamera* GetCamera() { return mainCam; }
 
 	//friend class CPlayScenceKeyHandler;

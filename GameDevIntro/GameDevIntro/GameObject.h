@@ -42,15 +42,13 @@ public:
 
 	bool IsEnabled() { return this->isEnabled; }
 	void Disable() { this->isEnabled = false; }
+
 	void SetPosition(Vector2 pos) { this->transform.position = pos; }
 	Vector2 GetPosition() { return this->transform.position; }
 	void SetVelocity(Vector2 v) { this->velocity = v; }
 	Vector2 GetVelocity() { return this->velocity; }
 	void SetAcceleration(Vector2 a) { this->acceleration = a; }
 	Vector2 GetAcceleration() { return this->acceleration; }
-
-	int GetState() { return this->state; }
-	void SetState(int state) { this->state = state; }
 
 	std::vector<CCollider2D*> GetColliders() { return this->colliders; }
 	void SetColliders(std::vector<CCollider2D*> colliders) { this->colliders = colliders; }

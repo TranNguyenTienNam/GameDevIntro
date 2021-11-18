@@ -14,7 +14,7 @@ void CSophiaIdleState::UpdateColliders(CSophia& sophia, int nx)
 	collider->SetGameObject(&sophia);
 	collider->SetOffset(OFFSET_SOPHIA_IDLE);
 	collider->SetBoxSize(BOX_SOPHIA_IDLE);
-	/*collider->SetDynamic();*/
+	collider->SetDynamic(true);
 	colliders.push_back(collider);
 
 	sophia.SetColliders(colliders);

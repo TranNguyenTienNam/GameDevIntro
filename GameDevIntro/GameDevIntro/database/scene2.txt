@@ -74,7 +74,7 @@ map\sectionB.json
 [OBJECTS]
 # type		x	y
 # JASON
-obj-jason	1296	432
+obj-jason	1226	432
 
 # SOPHIA
 obj-sophia	1196	432
@@ -519,4 +519,4 @@ obj-brick	944	144
 
 # --- SCENE PORTAL ----
 # type		x	y	w	h	scene_id
-#obj-portal	0	130	20	40	1
+obj-portal	1260	432	20	40	1

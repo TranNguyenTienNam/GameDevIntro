@@ -5,6 +5,8 @@
 #include "InputHandler.h"
 #include "Brick.h"
 #include "Utils.h"
+#include "PlayScene.h"
+#include "Sophia.h"
 
 void CJason::InitAnimations()
 {
@@ -26,10 +28,12 @@ CJason::CJason() :CGameObject()
 	collider->SetGameObject(this);
 	collider->SetOffset(VectorZero());
 	collider->SetBoxSize(Vector2(JASON_WIDTH, JASON_HEIGHT));
-	collider->SetDynamic();
+	collider->SetDynamic(true);
 	colliders.push_back(collider);
 
 	onGround = true;
+	controllable = false;
+	CPlayer::jason = this;
 	SetState(JasonState::JASON_IDLE);
 }
 
@@ -46,12 +50,12 @@ void CJason::SetState(JasonState state)
 		velocity.x = 0.0f;
 		if (onGround == true) animation = animations.at("Idle");
 		break;
-	case JASON_WALKING_LEFT:
+	case JASON_MOVING_LEFT:
 		velocity.x = -JASON_WALKING_SPEED;
 		nx = -1;
 		if (onGround == true) animation = animations.at("Walk");
 		break;
-	case JASON_WALKING_RIGHT:
+	case JASON_MOVING_RIGHT:
 		velocity.x = JASON_WALKING_SPEED;
 		nx = 1;
 		if (onGround == true) animation = animations.at("Walk");
@@ -68,23 +72,23 @@ void CJason::SetState(JasonState state)
 
 void CJason::Update(DWORD dt)
 {
+	auto inputHandler = CGame::GetInstance()->GetService<CInputHandler>();
 	/*if (velocity.x > JASON_WALKING_SPEED) velocity.x = JASON_WALKING_SPEED;
 	else if (velocity.x < -JASON_WALKING_SPEED) velocity.x = - JASON_WALKING_SPEED;*/
 	/*if (abs(velocity.x) - 0.0001f * dt < 0) velocity.x = 0;*/
-	/*if (controllable == false)
+	if (controllable == false)
 	{
 		SetState(JasonState::JASON_IDLE);
 		return;
-	}*/
+	}
 
-	auto inputHandler = CGame::GetInstance()->GetService<CInputHandler>();
 	if (inputHandler->IsKeyDown(DIK_RIGHT))
 	{
-		SetState(JasonState::JASON_WALKING_RIGHT);
+		SetState(JasonState::JASON_MOVING_RIGHT);
 	}
 	else if (inputHandler->IsKeyDown(DIK_LEFT))
 	{
-		SetState(JasonState::JASON_WALKING_LEFT);
+		SetState(JasonState::JASON_MOVING_LEFT);
 	}
 	else
 	{
@@ -94,6 +98,22 @@ void CJason::Update(DWORD dt)
 	if (inputHandler->OnKeyDown(DIK_X) && onGround == true)
 	{
 		SetState(JasonState::JASON_JUMPING);
+	}
+
+	if (inputHandler->OnKeyDown(DIK_LSHIFT) && GetTickCount() - lastTimeSwitch > switchDelay 
+		&& sophia->GetColliders().at(0)->GetBoundingBox().Contain(colliders.at(0)->GetBoundingBox()))
+	{
+		lastTimeSwitch = GetTickCount();
+		controllable = false;
+
+		// Enable Sophia, set Sophia's position, state is jumping
+		auto scene = (CPlayScene*)CGame::GetInstance()->GetService<CScenes>()->GetCurrentScene();
+		scene->SetPlayer(sophia);
+		scene->GetCamera()->SetTarget(sophia);
+
+		sophia->SetControllable(true);
+		for (auto co : sophia->GetColliders())
+			co->SetTrigger(false);
 	}
 }
 
@@ -108,10 +128,10 @@ void CJason::OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionE
 	{
 		LPCOLLISIONEVENT e = collisions[i];
 
-		if (dynamic_cast<CBrick*>(e->obj) && e->ny == 1)
+		if (dynamic_cast<CBrick*>(e->obj))
 		{
-			if (onGround == false) onGround = true;
-			DebugOut(L"On ground\n");
+			if (onGround == false && e->ny == 1) onGround = true;
+			// TODO: Collise with wall, then hold idle state
 		}
 		else if (dynamic_cast<CPortal*>(e->obj))
 		{

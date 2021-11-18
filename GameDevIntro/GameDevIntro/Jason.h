@@ -1,18 +1,10 @@
 #pragma once
 #include "GameObject.h"
+#include "Player.h"
 
 #define JASON_WALKING_SPEED		0.1f
 #define JASON_JUMP_SPEED_Y		0.53f
 #define JASON_GRAVITY			0.0026f
-
-#define JASON_STATE_IDLE			10
-#define JASON_STATE_WALK_LEFT		20
-#define JASON_STATE_WALK_RIGHT		21
-#define JASON_STATE_JUMP			30
-#define JASON_STATE_DIE				40
-#define JASON_STATE_CROUCH_LEFT		50
-#define JASON_STATE_CROUCH_RIGHT	51
-#define JASON_STATE_LIE				60
 
 #define JASON_WIDTH 8.0f
 #define JASON_HEIGHT 16.0f
@@ -20,17 +12,20 @@
 enum JasonState
 {
 	JASON_IDLE,
-	JASON_WALKING_LEFT,
-	JASON_WALKING_RIGHT,
+	JASON_MOVING_LEFT,
+	JASON_MOVING_RIGHT,
 	JASON_JUMPING
 };
 
-class CJason : public CGameObject
+class CPlayer;
+
+class CJason : public CGameObject, public CPlayer
 {
 private:
-	bool onGround;
 	JasonState state;
 	LPANIMATION animation;
+
+	/*CSophia* sophia;*/
 protected:
 	void InitAnimations();
 public:

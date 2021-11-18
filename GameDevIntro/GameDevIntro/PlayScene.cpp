@@ -13,6 +13,7 @@
 #include "Sophia.h"
 #include "Portal.h"
 #include "Brick.h"
+#include "Jason.h"
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
@@ -137,11 +138,11 @@ void CPlayScene::_ParseSection_TILEMAP(std::string line)
 	int mapHeight = d["height"].GetInt();
 
 	// Set boundary of camera
-	RectF boundary; // TODO: Sua lai cac con so thanh const
-	boundary.left = -8;
-	boundary.top = mapHeight * tileHeight + 8;
-	boundary.right = mapWidth * tileWidth - 8;
-	boundary.bottom = 8;
+	RectF boundary;
+	boundary.left = -tileWidth / 2;
+	boundary.top = mapHeight * tileHeight + tileHeight / 2;
+	boundary.right = mapWidth * tileWidth - tileWidth / 2;
+	boundary.bottom = tileHeight / 2;
 	mainCam->GetBoundary(boundary);
 
 	// Init Grid
@@ -216,19 +217,22 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	if (object_type == "obj-jason")
 	{
+		obj = new CJason;
+	}
+	else if (object_type == "obj-sophia")
+	{
 		if (player != NULL)
 		{
-			DebugOut(L"[ERROR] MARIO object was created before!\n");
+			DebugOut(L"[ERROR] SOPHIA object was created before!\n");
 			return;
 		}
-		obj = new CJason();
-		player = (CJason*)obj;
+		obj = new CSophia;
+		player = (CSophia*)obj;
 		mainCam->SetTarget(player);
 
 		DebugOut(L"[INFO] Player object created!\n");
 	}
-	else if (object_type == "obj-sophia") obj = new CSophia();
-	else if (object_type == "obj-brick") obj = new CBrick();
+	else if (object_type == "obj-brick") obj = new CBrick;
 	else if (object_type == "obj-portal")
 	{
 		float w = atof(tokens[3].c_str());
@@ -304,28 +308,32 @@ void CPlayScene::Load()
 
 void CPlayScene::PreUpdate()
 {
-	UpdatePotentialObjects();
+	RectF bbMainCam = mainCam->GetBoundingBox();
+	UpdateOnScreenTiles(bbMainCam);
+	UpdatePotentialObjects(bbMainCam);
 }
 
-void CPlayScene::UpdatePotentialObjects()
+void CPlayScene::UpdateOnScreenTiles(RectF rect)
 {
-	RectF bbMainCam = mainCam->GetBoundingBox();
 	onScreenTilemap.clear();
+
+	rect.left -= 16;
+	rect.top += 16;
+	rect.right += 16;
+	rect.bottom -= 16;
+
 	for (auto tile : tilemap)
 	{
-		Vector2 tilePos = tile->GetPosition();
-		RectF tileBox;
-		tileBox.left = tilePos.x - 8;
-		tileBox.top = tilePos.y + 8;
-		tileBox.right = tilePos.x + 8;
-		tileBox.bottom = tilePos.y - 8;
-		if (bbMainCam.Contain(tilePos) || bbMainCam.Overlap(tileBox))
+		if (rect.Contain(tile->GetPosition()))
 			onScreenTilemap.push_back(tile);
 	}
+}
 
+void CPlayScene::UpdatePotentialObjects(RectF rect)
+{
 	potentials.clear();
 	quadtree->Update(objects);
-	quadtree->Retrieve(potentials, bbMainCam);
+	quadtree->Retrieve(potentials, rect);
 	DebugOut(L"potentials %d\n", potentials.size());
 }
 
@@ -342,15 +350,15 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::Render()
 {
-	for (auto tile : tilemap)
+	for (auto tile : onScreenTilemap)
 		tile->Draw(255);
 
 	for (auto obj : potentials)
 		if (obj->IsEnabled() == true) obj->Render();
 
 	// RENDERING GIZMO
-	for (auto obj : potentials)
-		if (obj->IsEnabled() == true) obj->RenderBoundingBox();
+	/*for (auto obj : potentials)
+		if (obj->IsEnabled() == true) obj->RenderBoundingBox();*/
 }
 
 /*
@@ -361,6 +369,8 @@ void CPlayScene::Unload()
 	for (auto tile : tilemap)
 		delete tile;
 	tilemap.clear();
+
+	onScreenTilemap.clear();
 	 
 	for (auto obj : objects)
 		obj->Disable();
@@ -376,7 +386,6 @@ void CPlayScene::Unload()
 	
 	if (mainCam != nullptr)
 	{
-		/*mainCam->SetTarget(NULL);*/
 		delete mainCam;
 		mainCam = nullptr;
 	}
@@ -394,7 +403,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 
-	CJason* jason = ((CPlayScene*)scence)->GetPlayer();
+	CJason* jason = (CJason*)((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
 	case DIK_A:

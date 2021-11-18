@@ -160,6 +160,7 @@
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Jason.h" />
     <ClInclude Include="KeyEventHandler.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Portal.h" />
     <ClInclude Include="Quadtree.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="Jason.cpp" />
     <ClCompile Include="KeyEventHandler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="Quadtree.cpp" />

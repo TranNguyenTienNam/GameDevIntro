@@ -8,15 +8,23 @@
 #include "SophiaUpwardState.h"
 #include "InputHandler.h"
 #include "Utils.h"
+#include "Brick.h"
+#include "Scenes.h"
+#include "PlayScene.h"
+#include "Jason.h"
 
 CSophia::CSophia()
 {
 	InitAnimation();
 	stateWheel = new CWheelIdleState;
-	stateDirection = new CSophiaUpward45State;
+	stateDirection = new CSophiaIdleState;
 
 	// Init collider
 	stateDirection->UpdateColliders(*this, nx);
+
+	// Player
+	controllable = true;
+	CPlayer::sophia = this;
 }
 
 CSophia::~CSophia()
@@ -34,11 +42,17 @@ void CSophia::InitAnimation()
 
 void CSophia::Update(DWORD dt)
 {
-	stateDirection->Update(dt, *this, nx);
+	if (controllable == false)
+	{
+		if (dynamic_cast<CWheelIdleState*>(stateWheel) == nullptr) stateWheel = new CWheelIdleState;
+		if (dynamic_cast<CSophiaIdleState*>(stateDirection) == nullptr) stateDirection = new CSophiaIdleState;
+		stateDirection->Update(dt, *this, nx);
+		return;
+	}
 
 	// TODO: Move all changes of states into UpdateState() and the others into Update() of class State
 	// TODO: Maybe combine Wheel State with Physical State 
-	/*auto inputHandler = CGame::GetInstance()->GetService<CInputHandler>();
+	auto inputHandler = CGame::GetInstance()->GetService<CInputHandler>();
 	if (inputHandler->IsKeyDown(DIK_RIGHT))
 	{
 		velocity.x = 0.15f;
@@ -57,7 +71,7 @@ void CSophia::Update(DWORD dt)
 		stateWheel = new CWheelIdleState;
 	}
 
-	if (dynamic_cast<CSophiaUpwardState*>(stateDirection)) lastTime2 = GetTickCount();
+	if (dynamic_cast<CSophiaUpwardState*>(stateDirection)) lastTimeToLowerGun = GetTickCount();
 
 	if (inputHandler->IsKeyDown(DIK_UP))
 	{
@@ -66,29 +80,31 @@ void CSophia::Update(DWORD dt)
 		{
 			stateDirection = new CSophiaUpward45State;
 		}
-		else if (now - lastTime > 200 && dynamic_cast<CSophiaUpward45State*>(stateDirection))
+		else if (now - lastTimeToLiftGun > 200 && dynamic_cast<CSophiaUpward45State*>(stateDirection))
 		{
 			stateDirection = new CSophiaUpwardState;
 		}
 	}
 	else
 	{
-		lastTime = GetTickCount();
-		DWORD now = lastTime;
+		lastTimeToLiftGun = GetTickCount();
+		DWORD now = lastTimeToLiftGun;
 		if (dynamic_cast<CSophiaUpwardState*>(stateDirection))
 		{
 			stateDirection = new CSophiaUpward45State;
 		}
-		else if (now - lastTime2 > 200 && dynamic_cast<CSophiaUpward45State*>(stateDirection))
+		else if (now - lastTimeToLowerGun > 200 && dynamic_cast<CSophiaUpward45State*>(stateDirection))
 		{
 			stateDirection = new CSophiaIdleState;
 		}
 	}
 
 	stateDirection->Update(dt, *this, nx);
+	stateDirection->UpdateColliders(*this, nx);
 
-	if (inputHandler->IsKeyDown(DIK_X))
+	if (inputHandler->OnKeyDown(DIK_X) && onGround == true)
 	{
+		onGround = false;
 		velocity.y = 0.7f;
 
 		DWORD now = GetTickCount();
@@ -97,7 +113,25 @@ void CSophia::Update(DWORD dt)
 		{
 
 		}
-	}*/
+	}
+
+	if (inputHandler->OnKeyDown(DIK_LSHIFT) && GetTickCount() - lastTimeSwitch > switchDelay)
+	{
+		lastTimeSwitch = GetTickCount();
+		// Sophia is not controllable, collider is trigger, animation is idle
+		controllable = false;
+		for (auto co : colliders)
+			co->SetTrigger(true);
+
+		// Enable Jason, set jason's position, state is jumping
+		auto scene = (CPlayScene*)CGame::GetInstance()->GetService<CScenes>()->GetCurrentScene();
+		scene->SetPlayer(jason);
+		scene->GetCamera()->SetTarget(jason);
+
+		jason->SetPosition(transform.position);
+		jason->SetControllable(true);
+		jason->SetState(JasonState::JASON_JUMPING); // TODO: Set nx yet
+	}
 }
 
 void CSophia::Render()
@@ -108,4 +142,21 @@ void CSophia::Render()
 	sprMiddle->Draw(transform.position + posMiddle, nx, 255);
 	sprCabin->Draw(transform.position + posCabin, nx, 255);
 	sprGun->Draw(transform.position + posGun, nx, 255);
+}
+
+void CSophia::OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions)
+{
+	for (UINT i = 0; i < collisions.size(); i++)
+	{
+		LPCOLLISIONEVENT e = collisions[i];
+
+		if (dynamic_cast<CBrick*>(e->obj))
+		{
+			if (onGround == false && e->ny == 1) onGround = true;
+		}
+	}
+}
+
+void CSophia::OnTriggerEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions)
+{
 }

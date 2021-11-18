@@ -12,9 +12,9 @@ void CSophiaUpwardState::UpdateColliders(CSophia& sophia, int nx)
 
 	auto collider = new CCollider2D;
 	collider->SetGameObject(&sophia);
-	collider->SetOffset(OFFSET_SOPHIA_UPWARD);
+	collider->SetOffset(Vector2(-3.0f * nx, 12.0f));
 	collider->SetBoxSize(BOX_SOPHIA_UPWARD);
-	/*collider->SetDynamic();*/
+	collider->SetDynamic(true);
 	colliders.push_back(collider);
 
 	sophia.SetColliders(colliders);

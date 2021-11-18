@@ -3,7 +3,7 @@
 
 # id	file_path	transparent_color_r	g	b
 [TEXTURES]
-tex-player	textures\player.png	0	57	115
+tex-player	textures\player.png	41	255	4
 tex-tileset	textures\tileset.png	0	0	0
 
 # id			left	top	width	height	texture_id
@@ -30,7 +30,21 @@ spr-jason-crouch-1	20	47	16	8	tex-player
 spr-jason-lie	20	89	16	8	tex-player
 
 # ==== SOPHIA =========
-# turn gun
+# wheel part
+spr-sophia-wheel-0	3	21	8	8	tex-player
+spr-sophia-wheel-1	12	21	8	8	tex-player
+spr-sophia-wheel-2	21	21	8	8	tex-player
+spr-sophia-wheel-3	30	21	8	8	tex-player
+# middle part
+spr-sophia-middle	3	12	8	8	tex-player
+# gun part
+spr-sophia-gun-00	12	3	8	8	tex-player
+spr-sophia-gun-45	21	3	8	8	tex-player
+spr-sophia-gun-90	30	3	8	8	tex-player
+# cabin part
+spr-sophia-cabin	39	3	16	8	tex-player
+spr-sophia-cabin-turn	56	3	16	8	tex-player
+spr-sophia-cabin-45	73	3	16	16	tex-player
 
 # ani_id		sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
@@ -49,6 +63,11 @@ ani-jason-crouch	spr-jason-crouch-0	100	spr-jason-crouch-1	100
 # lie
 ani-jason-lie	spr-jason-lie	100
 
+# ==== SOPHIA ========
+# wheel
+ani-sophia-left-wheel	spr-sophia-wheel-0	100	spr-sophia-wheel-1	100	spr-sophia-wheel-2	100	spr-sophia-wheel-3	100
+ani-sophia-right-wheel	spr-sophia-wheel-3	100	spr-sophia-wheel-0	100	spr-sophia-wheel-1	100	spr-sophia-wheel-2	100
+
 [TILEMAP]
 map\sectionA.json
 
@@ -56,6 +75,9 @@ map\sectionA.json
 # type		x	y
 # JASON
 obj-jason	68	400
+
+# SOPHIA
+obj-sophia	88	300
 
 # BRICK 
 # --- platform (hint: I created the list using Excel!) ----
@@ -142,4 +164,4 @@ obj-brick	208	128
 
 # --- SCENE PORTAL ----
 # type		x	y	w	h	scene_id
-obj-portal	48	80	32	16	2
+obj-portal	48	80	20	40	2

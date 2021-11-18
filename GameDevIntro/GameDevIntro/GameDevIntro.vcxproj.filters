@@ -64,6 +64,9 @@
     <Filter Include="Game Source\Game Objects\Player\Jason">
       <UniqueIdentifier>{0d1f125f-c43a-4ee2-886b-fad32feea826}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Source\Game Objects\Player\BigJason">
+      <UniqueIdentifier>{698a478b-e3db-411d-9f90-95a00f465d41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -123,9 +126,6 @@
     <ClInclude Include="PlayScene.h">
       <Filter>Framework\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="BigJason.h">
-      <Filter>Game Source\Game Objects\Player</Filter>
-    </ClInclude>
     <ClInclude Include="Brick.h">
       <Filter>Game Source\Game Objects</Filter>
     </ClInclude>
@@ -161,6 +161,12 @@
     </ClInclude>
     <ClInclude Include="Jason.h">
       <Filter>Game Source\Game Objects\Player\Jason</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Game Source\Game Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="BigJason.h">
+      <Filter>Game Source\Game Objects\Player\BigJason</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +259,9 @@
     </ClCompile>
     <ClCompile Include="Jason.cpp">
       <Filter>Game Source\Game Objects\Player\Jason</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Game Source\Game Objects\Player</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

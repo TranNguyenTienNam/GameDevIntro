@@ -20,12 +20,15 @@ void CQuadtree::Update(std::vector<CGameObject*> gameObjects)
 		{
 			if (co->IsDynamic() == true)
 			{
-				// Step 1: Find the leaf which this game object belongs to
-				// Step 2: Remove game object from this leaf
-				RemoveGameObjectFromLeaf(object);
+				if (object->GetQuadtree()->m_rect.Contain(object->GetPosition()) == false)
+				{
+					// Step 1: Find the leaf which this game object belongs to
+					// Step 2: Remove game object from this leaf
+					RemoveGameObjectFromLeaf(object);
 
-				// Step 3: Find the new leaf
-				Insert(object);
+					// Step 3: Find the new leaf
+					Insert(object);
+				}
 			}
 		}
 	}

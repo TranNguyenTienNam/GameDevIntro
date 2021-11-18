@@ -1,8 +1,10 @@
 #pragma once
 #include "GameObject.h"
 #include "SophiaState.h"
+#include "Player.h"
 
 class ISophiaState;
+class CPlayer;
 
 enum SophiaKeySet
 {
@@ -14,7 +16,7 @@ enum SophiaKeySet
 	OPEN_CABIN = DIK_LSHIFT
 };
 
-class CSophia : public CGameObject
+class CSophia : public CGameObject, public CPlayer
 {
 private:
 	ISophiaState* stateWheel;
@@ -22,8 +24,10 @@ private:
 	ISophiaState* statePhysical;
 	//ISophiaState* equipment; // Dont need to code this if Ms.Trinh not require
 
-	DWORD lastTime;
-	DWORD lastTime2;
+	DWORD lastTimeToLiftGun;
+	DWORD lastTimeToLowerGun;
+
+	/*CJason* jason;*/
 
 	// Power, Hover in class Player
 	void InitAnimation(); // If CSophia inherits from CPlayer, this is virtual function
@@ -42,4 +46,7 @@ public:
 
 	virtual void Update(DWORD dt);
 	virtual void Render();
+
+	void OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions);
+	void OnTriggerEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions);
 };
