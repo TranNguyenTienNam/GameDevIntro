@@ -24,8 +24,6 @@ class CJason : public CGameObject, public CPlayer
 private:
 	JasonState state;
 	LPANIMATION animation;
-
-	/*CSophia* sophia;*/
 protected:
 	void InitAnimations();
 public:
@@ -37,6 +35,6 @@ public:
 	void Update(DWORD dt);
 	void Render();
 
-	void OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions);
-	void OnTriggerEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions);
+	void OnCollisionEnter(CCollider2D* selfCollider, CCollisionEvent* collision);
+	void OnTriggerEnter(CCollider2D* selfCollider, CCollisionEvent* collision);
 };

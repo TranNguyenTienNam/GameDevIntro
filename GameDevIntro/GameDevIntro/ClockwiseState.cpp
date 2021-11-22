@@ -3,11 +3,11 @@
 
 void CClockwiseState::Render(CSophia& sophia)
 {
-	auto anim = sophia.GetAnimations().at("Left-Wheel");
-	anim->SetIsReversed(true);
-	anim->SetIsPaused(false);
+	auto animLeft = sophia.GetAnimations().at("Left-Wheel");
+	animLeft->SetIsReversed(true);
+	animLeft->SetIsPaused(false);
 
-	auto anim1 = sophia.GetAnimations().at("Right-Wheel");
-	anim1->SetIsReversed(true);
-	anim1->SetIsPaused(false);
+	auto animRight = sophia.GetAnimations().at("Right-Wheel");
+	animRight->SetIsReversed(true);
+	animRight->SetIsPaused(false);
 }

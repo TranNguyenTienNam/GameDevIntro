@@ -12,6 +12,7 @@
 #include "Scenes.h"
 #include "PlayScene.h"
 #include "Jason.h"
+#include "Portal.h"
 
 CSophia::CSophia()
 {
@@ -22,9 +23,9 @@ CSophia::CSophia()
 	// Init collider
 	stateDirection->UpdateColliders(*this, nx);
 
-	// Player
+	// Player's settings
 	controllable = true;
-	CPlayer::sophia = this;
+	sophia = this;
 }
 
 CSophia::~CSophia()
@@ -42,6 +43,9 @@ void CSophia::InitAnimation()
 
 void CSophia::Update(DWORD dt)
 {
+	velocity.y += -0.0026f * dt; // TODO: Need to adjust gravity
+	/*if (abs(velocity.y) > 0.02) velocity.y = -0.02;*/
+
 	if (controllable == false)
 	{
 		if (dynamic_cast<CWheelIdleState*>(stateWheel) == nullptr) stateWheel = new CWheelIdleState;
@@ -50,30 +54,37 @@ void CSophia::Update(DWORD dt)
 		return;
 	}
 
+	/*velocity.x += acceleration.x * dt;*/
+
 	// TODO: Move all changes of states into UpdateState() and the others into Update() of class State
 	// TODO: Maybe combine Wheel State with Physical State 
 	auto inputHandler = CGame::GetInstance()->GetService<CInputHandler>();
-	if (inputHandler->IsKeyDown(DIK_RIGHT))
+
+	if (inputHandler->IsKeyDown(PlayerKeySet::MOVE_RIGHT_KEY))
 	{
 		velocity.x = 0.15f;
+		/*acceleration.x = 0.0002f;*/
 		nx = 1;
 		stateWheel = new CClockwiseState;
 	}
-	else if (inputHandler->IsKeyDown(DIK_LEFT))
+	else if (inputHandler->IsKeyDown(PlayerKeySet::MOVE_LEFT_KEY))
 	{
 		velocity.x = -0.15f;
+		/*acceleration.x = -0.0002f;*/
 		nx = -1;
 		stateWheel = new CCounterclockwiseState;
 	}
 	else
 	{
 		velocity.x = 0.0f;
+		/*acceleration.x = 0.0f;*/
 		stateWheel = new CWheelIdleState;
 	}
 
+	// Update gun's direction
 	if (dynamic_cast<CSophiaUpwardState*>(stateDirection)) lastTimeToLowerGun = GetTickCount();
 
-	if (inputHandler->IsKeyDown(DIK_UP))
+	if (inputHandler->IsKeyDown(PlayerKeySet::SOPHIA_UPWARD_KEY))
 	{
 		DWORD now = GetTickCount();
 		if (dynamic_cast<CSophiaIdleState*>(stateDirection))
@@ -102,20 +113,21 @@ void CSophia::Update(DWORD dt)
 	stateDirection->Update(dt, *this, nx);
 	stateDirection->UpdateColliders(*this, nx);
 
-	if (inputHandler->OnKeyDown(DIK_X) && onGround == true)
+	if (inputHandler->OnKeyDown(PlayerKeySet::JUMPING_KEY) /*&& onGround == true*/)
 	{
 		onGround = false;
 		velocity.y = 0.7f;
 
 		DWORD now = GetTickCount();
 
-		if (inputHandler->IsKeyDown(DIK_X))
+		if (inputHandler->IsKeyDown(PlayerKeySet::JUMPING_KEY))
 		{
 
 		}
 	}
 
-	if (inputHandler->OnKeyDown(DIK_LSHIFT) && GetTickCount() - lastTimeSwitch > switchDelay)
+	if (inputHandler->OnKeyDown(PlayerKeySet::SWITCH_CHARACTER_KEY) && 
+		GetTickCount() - lastTimeSwitch > switchDelay)
 	{
 		lastTimeSwitch = GetTickCount();
 		// Sophia is not controllable, collider is trigger, animation is idle
@@ -128,9 +140,11 @@ void CSophia::Update(DWORD dt)
 		scene->SetPlayer(jason);
 		scene->GetCamera()->SetTarget(jason);
 
+		jason->SetEnable(true);
 		jason->SetPosition(transform.position);
 		jason->SetControllable(true);
-		jason->SetState(JasonState::JASON_JUMPING); // TODO: Set nx yet
+		jason->SetDirect(nx);
+		jason->SetState(JasonState::JASON_JUMPING);
 	}
 }
 
@@ -144,19 +158,20 @@ void CSophia::Render()
 	sprGun->Draw(transform.position + posGun, nx, 255);
 }
 
-void CSophia::OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions)
+void CSophia::OnCollisionEnter(CCollider2D* selfCollider, CCollisionEvent* collision)
 {
-	for (UINT i = 0; i < collisions.size(); i++)
+	if (dynamic_cast<CBrick*>(collision->obj))
 	{
-		LPCOLLISIONEVENT e = collisions[i];
-
-		if (dynamic_cast<CBrick*>(e->obj))
-		{
-			if (onGround == false && e->ny == 1) onGround = true;
-		}
+		if (onGround == false && collision->ny == 1) onGround = true;
+	}
+	else if (dynamic_cast<CPortal*>(collision->obj))
+	{
+		auto p = dynamic_cast<CPortal*>(collision->obj);
+		CGame::GetInstance()->GetService<CScenes>()->SwitchScene(p->GetSceneId());
+		return;
 	}
 }
 
-void CSophia::OnTriggerEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions)
+void CSophia::OnTriggerEnter(CCollider2D* selfCollider, CCollisionEvent* collision)
 {
 }

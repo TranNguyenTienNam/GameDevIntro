@@ -28,12 +28,16 @@ class CCollider2D
 private:
 	std::vector<LPCOLLISIONEVENT> coEvents;
 	std::vector<LPCOLLISIONEVENT> coEventsResult;
+	LPCOLLISIONEVENT coEventX;
+	LPCOLLISIONEVENT coEventY;
 protected:
 	float dx;
 	float dy;
 
 	bool isTrigger = false;
 	bool isDynamic = false;
+	bool filterX;
+	bool filterY;
 	CGameObject* object;
 	RectF boundingBox;
 	Vector2 offset;
@@ -46,15 +50,15 @@ public:
 	LPCOLLISIONEVENT SweptAABBEx(CCollider2D* coOther);
 	void CalcPotentialCollisions(std::vector<CGameObject*>* coObjects, std::vector<LPCOLLISIONEVENT>& coEvents);
 	void FilterCollision(
-		std::vector<LPCOLLISIONEVENT>& coEvents,
-		std::vector<LPCOLLISIONEVENT>& coEventsResult,
-		float& min_tx, float& min_ty,
-		float& nx, float& ny);
+		std::vector<LPCOLLISIONEVENT>& coEvents, 
+		LPCOLLISIONEVENT & colX, LPCOLLISIONEVENT & colY, 
+		bool filterX, bool filterY);
 	void PhysicsUpdate(std::vector<CGameObject*>* coObjects);
 
 	bool IsDynamic() { return this->isDynamic; }
 	void SetDynamic(bool value) { this->isDynamic = value; }
 	void SetTrigger(bool value) { this->isTrigger = value; }
+	void SetFilter(bool valueX, bool valueY) { this->filterX = valueX; this->filterY = valueY; }
 	CGameObject* GetGameObject() { return this->object; }
 	void SetGameObject(CGameObject* gameObject) { this->object = gameObject; }
 

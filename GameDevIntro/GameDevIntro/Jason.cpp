@@ -23,6 +23,8 @@ CJason::CJason() :CGameObject()
 {
 	InitAnimations();
 
+	isEnabled = false;
+
 	// Init collider
 	auto collider = new CCollider2D;
 	collider->SetGameObject(this);
@@ -31,9 +33,10 @@ CJason::CJason() :CGameObject()
 	collider->SetDynamic(true);
 	colliders.push_back(collider);
 
+	// Player's settings
 	onGround = true;
 	controllable = false;
-	CPlayer::jason = this;
+	jason = this;
 	SetState(JasonState::JASON_IDLE);
 }
 
@@ -48,15 +51,18 @@ void CJason::SetState(JasonState state)
 	{
 	case JASON_IDLE:
 		velocity.x = 0.0f;
+		/*acceleration.x = 0.0f;*/
 		if (onGround == true) animation = animations.at("Idle");
 		break;
 	case JASON_MOVING_LEFT:
-		velocity.x = -JASON_WALKING_SPEED;
+		/*velocity.x = -JASON_WALKING_SPEED;*/
+		acceleration.x = -0.0002f;
 		nx = -1;
 		if (onGround == true) animation = animations.at("Walk");
 		break;
 	case JASON_MOVING_RIGHT:
-		velocity.x = JASON_WALKING_SPEED;
+		/*velocity.x = JASON_WALKING_SPEED;*/
+		acceleration.x = 0.0002f;
 		nx = 1;
 		if (onGround == true) animation = animations.at("Walk");
 		break;
@@ -72,21 +78,28 @@ void CJason::SetState(JasonState state)
 
 void CJason::Update(DWORD dt)
 {
-	auto inputHandler = CGame::GetInstance()->GetService<CInputHandler>();
+	velocity.y += -0.0026f * dt;
+	velocity.x += acceleration.x * dt;
+	
+
+	// TODO: Limit velocity
 	/*if (velocity.x > JASON_WALKING_SPEED) velocity.x = JASON_WALKING_SPEED;
-	else if (velocity.x < -JASON_WALKING_SPEED) velocity.x = - JASON_WALKING_SPEED;*/
-	/*if (abs(velocity.x) - 0.0001f * dt < 0) velocity.x = 0;*/
+	else if (velocity.x < -JASON_WALKING_SPEED) velocity.x = -JASON_WALKING_SPEED;*/
+
+	auto inputHandler = CGame::GetInstance()->GetService<CInputHandler>();
 	if (controllable == false)
 	{
 		SetState(JasonState::JASON_IDLE);
 		return;
 	}
 
-	if (inputHandler->IsKeyDown(DIK_RIGHT))
+	/*velocity.x += acceleration.x * dt;*/
+
+	if (inputHandler->IsKeyDown(PlayerKeySet::MOVE_RIGHT_KEY))
 	{
 		SetState(JasonState::JASON_MOVING_RIGHT);
 	}
-	else if (inputHandler->IsKeyDown(DIK_LEFT))
+	else if (inputHandler->IsKeyDown(PlayerKeySet::MOVE_LEFT_KEY))
 	{
 		SetState(JasonState::JASON_MOVING_LEFT);
 	}
@@ -95,18 +108,19 @@ void CJason::Update(DWORD dt)
 		SetState(JasonState::JASON_IDLE);
 	}
 
-	if (inputHandler->OnKeyDown(DIK_X) && onGround == true)
+	if (inputHandler->OnKeyDown(PlayerKeySet::JUMPING_KEY) && onGround == true)
 	{
 		SetState(JasonState::JASON_JUMPING);
 	}
 
-	if (inputHandler->OnKeyDown(DIK_LSHIFT) && GetTickCount() - lastTimeSwitch > switchDelay 
-		&& sophia->GetColliders().at(0)->GetBoundingBox().Contain(colliders.at(0)->GetBoundingBox()))
+	if (inputHandler->OnKeyDown(PlayerKeySet::SWITCH_CHARACTER_KEY) && 
+		GetTickCount() - lastTimeSwitch > switchDelay && 
+		sophia->GetColliders().at(0)->GetBoundingBox().Contain(colliders.at(0)->GetBoundingBox())) // TODO: Fix if size of colliders is greater than one
 	{
 		lastTimeSwitch = GetTickCount();
 		controllable = false;
+		isEnabled = false;
 
-		// Enable Sophia, set Sophia's position, state is jumping
 		auto scene = (CPlayScene*)CGame::GetInstance()->GetService<CScenes>()->GetCurrentScene();
 		scene->SetPlayer(sophia);
 		scene->GetCamera()->SetTarget(sophia);
@@ -122,26 +136,21 @@ void CJason::Render()
 	animation->Render(transform.position, nx);
 }
 
-void CJason::OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions)
+void CJason::OnCollisionEnter(CCollider2D* selfCollider, CCollisionEvent* collision)
 {
-	for (UINT i = 0; i < collisions.size(); i++)
+	if (dynamic_cast<CBrick*>(collision->obj))
 	{
-		LPCOLLISIONEVENT e = collisions[i];
-
-		if (dynamic_cast<CBrick*>(e->obj))
-		{
-			if (onGround == false && e->ny == 1) onGround = true;
-			// TODO: Collise with wall, then hold idle state
-		}
-		else if (dynamic_cast<CPortal*>(e->obj))
-		{
-			auto p = dynamic_cast<CPortal*>(e->obj);
-			CGame::GetInstance()->GetService<CScenes>()->SwitchScene(p->GetSceneId());
-			return;
-		}
+		if (onGround == false && collision->ny == 1) onGround = true;
+		// TODO: Collise with wall, then hold idle state
+	}
+	else if (dynamic_cast<CPortal*>(collision->obj))
+	{
+		auto p = dynamic_cast<CPortal*>(collision->obj);
+		CGame::GetInstance()->GetService<CScenes>()->SwitchScene(p->GetSceneId());
+		return;
 	}
 }
 
-void CJason::OnTriggerEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions)
+void CJason::OnTriggerEnter(CCollider2D* selfCollider, CCollisionEvent* collisions)
 {
 }

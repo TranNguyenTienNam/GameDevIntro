@@ -143,7 +143,7 @@ void CQuadtree::Retrieve(std::vector<CGameObject*>& container, const RectF& rect
 	// Add all game objects to container
 	for (const auto& obj : m_inNodes)
 	{
-		container.emplace_back(obj);
+		if (obj->IsEnabled() == true) container.emplace_back(obj);
 	}
 }
 

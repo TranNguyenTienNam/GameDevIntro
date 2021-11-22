@@ -168,6 +168,9 @@
     <ClInclude Include="BigJason.h">
       <Filter>Game Source\Game Objects\Player\BigJason</Filter>
     </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Game Source\Game Objects\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -262,6 +265,9 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Game Source\Game Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Game Source\Game Objects\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

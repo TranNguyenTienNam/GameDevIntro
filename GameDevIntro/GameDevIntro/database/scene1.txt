@@ -77,7 +77,7 @@ map\sectionA.json
 obj-jason	68	400
 
 # SOPHIA
-obj-sophia	88	300
+obj-sophia	88	350
 
 # BRICK 
 # --- platform (hint: I created the list using Excel!) ----

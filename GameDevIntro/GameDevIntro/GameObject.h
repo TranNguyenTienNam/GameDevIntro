@@ -20,6 +20,7 @@ class CGameObject
 {
 protected:
 	bool isEnabled;
+	bool isDestroyed;
 
 	Transform transform;
 	std::vector<CCollider2D*>  colliders;
@@ -41,8 +42,12 @@ public:
 	~CGameObject();
 
 	bool IsEnabled() { return this->isEnabled; }
-	void Disable() { this->isEnabled = false; }
+	void SetEnable(bool value) { this->isEnabled = value; }
+	bool IsDestroyed() { return this->isDestroyed; }
+	void SetDestroyed() { this->isEnabled = false; this->isDestroyed = true; }
 
+	int GetDirect() { return this->nx; }
+	void SetDirect(int value) { this->nx = value; }
 	void SetPosition(Vector2 pos) { this->transform.position = pos; }
 	Vector2 GetPosition() { return this->transform.position; }
 	void SetVelocity(Vector2 v) { this->velocity = v; }
@@ -71,8 +76,8 @@ public:
 	virtual void PhysicsUpdate(std::vector<CGameObject*>* coObjects);
 	virtual void Update(DWORD dt) = 0;
 	virtual void Render() = 0;
-	virtual void OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions);
-	virtual void OnTriggerEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions);
+	virtual void OnCollisionEnter(CCollider2D* selfCollider, CCollisionEvent* collision);
+	virtual void OnTriggerEnter(CCollider2D* selfCollider, CCollisionEvent* collision);
 
 	void RenderBoundingBox();
 };

@@ -154,7 +154,7 @@ void CPlayScene::_ParseSection_TILEMAP(std::string line)
 	// Tileset texture settings
 	int columns = d["tilesets"].GetArray()[0]["columns"].GetInt();
 	int spacing = d["tilesets"].GetArray()[0]["spacing"].GetInt();
-	auto image_path = ToWSTR(d["tilesets"].GetArray()[0]["image"].GetString());
+	/*auto image_path = ToWSTR(d["tilesets"].GetArray()[0]["image"].GetString());*/
 	
 	/*CGame::GetInstance()->GetService<CTextures>()->Add("tex-tileset", image_path.c_str(), D3DCOLOR_XRGB(0, 0, 0));*/
 
@@ -162,34 +162,68 @@ void CPlayScene::_ParseSection_TILEMAP(std::string line)
 
 	for (auto& layer : layers)
 	{
-		auto data = layer["data"].GetArray();
+		auto layer_type = layer["type"].GetString();
+		auto visible = layer["visible"].GetBool();
 
-		for (int x = 0; x < mapWidth; x++)
+		// Tile Layer
+		if (strcmp(layer_type, "tilelayer") == 0 && visible == true)
 		{
-			for (int y = 0; y < mapHeight; y++)
+			auto data = layer["data"].GetArray();
+
+			for (int x = 0; x < mapWidth; x++)
 			{
-				int tilesetID = data[y * mapWidth + x].GetInt() - 1;
-				/*DebugOut(L"tilesetID %d\n", tilesetID);*/
+				for (int y = 0; y < mapHeight; y++)
+				{
+					int tilesetID = data[y * mapWidth + x].GetInt() - 1;
 
-				// Get tile coordinate in tileset by id
-				int tileX = tilesetID % columns;
-				int tileY = tilesetID / columns;
+					// Get tile coordinate in tileset by id
+					int tileX = tilesetID % columns;
+					int tileY = tilesetID / columns;
 
-				int left = tileX * (tileWidth + spacing);
-				int top = tileY * (tileHeight + spacing);
+					int left = tileX * (tileWidth + spacing);
+					int top = tileY * (tileHeight + spacing);
 
-				auto texTileset = CGame::GetInstance()->GetService<CTextures>()->Get("tex-tileset");
-				
-				int posX = x * tileWidth;
-				int posY = (mapHeight - y) * tileHeight;
+					auto texTileset = CGame::GetInstance()->GetService<CTextures>()->Get("tex-tileset");
 
-				/*DebugOut(L"index %d %d\n", tileX, tileY);*/
-				Vector2 position = Vector2(posX, posY);
+					int posX = x * tileWidth;
+					int posY = (mapHeight - y) * tileHeight;
 
-				auto newTile = new CTile(position, left, top, tileWidth, tileHeight, texTileset);
+					Vector2 position = Vector2(posX, posY);
 
-				/*DebugOut(L"pos %f %f, l %d, t %d, w %d, h %d\n", position.x, position.y, left, top, tileWidth, tileHeight);*/
-				tilemap.push_back(newTile);
+					auto newTile = new CTile(position, left, top, tileWidth, tileHeight, texTileset);
+
+					tilemap.push_back(newTile);
+				}
+			}
+		}
+		// Object Layer
+		else if (strcmp(layer_type, "objectgroup") == 0 && visible == true)
+		{
+			auto objects = layer["objects"].GetArray();
+
+			for (int i = 0; i < objects.Size(); i++)
+			{
+				CGameObject* obj = new CBrick;
+				int x = objects[i]["x"].GetInt();
+				int y = objects[i]["y"].GetInt();
+
+				obj->SetPosition(Vector2(x, m_mapHeight - y + 16));
+
+				auto properties = objects[i]["properties"].GetArray();
+				for (int j = 0; j < properties.Size(); j++)
+				{
+					bool filterX = true;
+					bool filterY = true;
+
+					if (strcmp(properties[j]["name"].GetString(), "FilterX"))
+						filterX = properties[j]["value"].GetBool();
+					else if (strcmp(properties[j]["name"].GetString(), "FilterY"))
+						filterY = properties[j]["value"].GetBool();
+					obj->GetColliders().at(0)->SetFilter(filterX, filterY);
+				}
+
+				this->objects.push_back(obj);
+				this->quadtree->Insert(obj);
 			}
 		}
 	}
@@ -357,8 +391,8 @@ void CPlayScene::Render()
 		if (obj->IsEnabled() == true) obj->Render();
 
 	// RENDERING GIZMO
-	/*for (auto obj : potentials)
-		if (obj->IsEnabled() == true) obj->RenderBoundingBox();*/
+	for (auto obj : potentials)
+		if (obj->IsEnabled() == true) obj->RenderBoundingBox();
 }
 
 /*
@@ -373,7 +407,7 @@ void CPlayScene::Unload()
 	onScreenTilemap.clear();
 	 
 	for (auto obj : objects)
-		obj->Disable();
+		obj->SetDestroyed();
 	objects.clear();
 
 	player = NULL;
@@ -396,7 +430,7 @@ void CPlayScene::Unload()
 void CPlayScene::Clean()
 {
 	for (auto obj : objects)
-		if (obj->IsEnabled() == false) delete obj;
+		if (obj->IsDestroyed() == true) delete obj;
 }
 
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)

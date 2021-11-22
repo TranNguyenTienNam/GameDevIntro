@@ -137,7 +137,7 @@ void CCollider2D::CalcPotentialCollisions(
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
-		if (object != coObjects->at(i)) {
+		if (object != coObjects->at(i) && coObjects->at(i)->IsEnabled() == true) {
 			for (auto co : coObjects->at(i)->GetColliders())
 			{
 				LPCOLLISIONEVENT e = SweptAABBEx(co);
@@ -155,56 +155,50 @@ void CCollider2D::CalcPotentialCollisions(
 
 void CCollider2D::FilterCollision(
 	std::vector<LPCOLLISIONEVENT>& coEvents,
-	std::vector<LPCOLLISIONEVENT>& coEventsResult,
-	float& min_tx, float& min_ty,
-	float& nx, float& ny)
+	LPCOLLISIONEVENT& colX,
+	LPCOLLISIONEVENT& colY,
+	bool filterX = true, 
+	bool filterY = true)
 {
+	float min_tx, min_ty;
+
 	min_tx = 1.0f;
 	min_ty = 1.0f;
 	int min_ix = -1;
 	int min_iy = -1;
 
-	nx = ny = 0.0f;
-
-	coEventsResult.clear();
-
 	for (UINT i = 0; i < coEvents.size(); i++)
 	{
 		LPCOLLISIONEVENT c = coEvents[i];
 
-		if (c->t < min_tx && c->nx != 0) {
-			min_tx = c->t; nx = c->nx; min_ix = i;
+		if (c->t < min_tx && c->nx != 0 && filterX == true) {
+			min_tx = c->t; min_ix = i;
 		}
 
-		if (c->t < min_ty && c->ny != 0) {
-			min_ty = c->t; ny = c->ny; min_iy = i;
+		if (c->t < min_ty && c->ny != 0 && filterY == true) {
+			min_ty = c->t; min_iy = i;
 		}
 	}
 
-	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
-	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
+	if (min_ix >= 0) colX = coEvents[min_ix];
+	if (min_iy >= 0) colY = coEvents[min_iy];
 }
 
 void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 {
-	// [WARNING] return when game object is not enabled, is nullptr, static
+	// Reduce the number of check collision if game object is not enabled, is nullptr, static
 	if (object == nullptr || isDynamic == false) return;
 
 	auto dt = CGame::GetDeltaTime();
 	auto pos = object->GetPosition();
 	auto velocity = object->GetVelocity();
-	auto acceleration = object->GetAcceleration();
 
-	// TODO: Change uniform motion into uniformly accelerated motion
 	this->dx = velocity.x * dt;
 	this->dy = velocity.y * dt;
 
-	velocity.x += acceleration.x * dt;
-	velocity.y += -0.0026f * dt; // TODO: Need to adjust gravity
-	object->SetVelocity(velocity);
-	/*if (dynamic_cast<CJason*>(object)) DebugOut(L"v %f\n", velocity.x);*/
-
 	coEvents.clear();
+	coEventX = NULL;
+	coEventY = NULL;
 
 	CalcPotentialCollisions(coObjects, coEvents);
 
@@ -212,31 +206,150 @@ void CCollider2D::PhysicsUpdate(std::vector<CGameObject*>* coObjects)
 	{
 		pos.x += dx;
 		pos.y += dy;
-		if (pos.y < 0) pos.y = 0;
 		object->SetPosition(pos);
 	}
 	else
 	{
-		float min_tx, min_ty;
-		float nx = 0, ny;
+		FilterCollision(coEvents, coEventX, coEventY);
 
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
-
-		if (isTrigger == false)
+		if (coEventX != NULL && coEventY != NULL)
 		{
-			// push out a bit to avoid overlapping next frame 
-			pos.x += min_tx * dx + nx * 0.4f;		
-			pos.y += min_ty * dy + ny * 0.4f;
-			object->SetPosition(pos);
+			// was collision on Y first ?
+			if (coEventY->t < coEventX->t)
+			{
+				if (isTrigger == false)
+				{
+					pos.y += coEventY->t * dy + coEventY->ny * 0.4f;
+					object->SetPosition(pos);
 
-			if (nx != 0) velocity.x = 0;
-			if (ny != 0) velocity.y = 0;
-			object->SetVelocity(velocity);
+					if (coEventY->ny != 0) velocity.y = 0;
+					object->SetVelocity(velocity);
+				}
+
+				if (coEventY->ny != 0)
+					if (isTrigger == false) object->OnCollisionEnter(this, coEventY);
+					else object->OnTriggerEnter(this, coEventY);
+
+				//
+				// see if after correction on Y, is there still a collision on X ? 
+				//
+				LPCOLLISIONEVENT colX_other = NULL;
+
+				//
+				// check again if there is true collision on X 
+				//
+
+				// replace with a new collision event using corrected location 
+				coEvents.push_back(SweptAABBEx(coEventX->co));
+
+				// re-filter on X only
+				FilterCollision(coEvents, colX_other, coEventY, /*filterX=*/1, /*filterY=*/0);
+
+				if (colX_other != NULL)
+				{
+					pos.x += colX_other->t * dx + colX_other->nx * 0.4f;
+					/*object->SetPosition(pos);*/
+
+					if (isTrigger == false) object->OnCollisionEnter(this, colX_other);
+					else object->OnTriggerEnter(this, colX_other);
+				}
+				else
+				{
+					pos.x += dx;
+					/*object->SetPosition(pos);*/
+				}
+			}
+			// collision on X first
+			else 
+			{
+				if (isTrigger == false)
+				{
+					pos.x += coEventX->t * dx + coEventX->nx * 0.4f;
+					object->SetPosition(pos);
+
+					if (coEventX->nx != 0) velocity.x = 0;
+					object->SetVelocity(velocity);
+				}
+
+				if (coEventX->nx != 0)
+					if (isTrigger == false) object->OnCollisionEnter(this, coEventX);
+					else object->OnTriggerEnter(this, coEventX);
+
+				//
+				// see if after correction on X, is there still a collision on Y ? 
+				//
+				LPCOLLISIONEVENT colY_other = NULL;
+
+				//
+				// check again if there is true collision on X 
+				//
+
+				// replace with a new collision event using corrected location 
+				coEvents.push_back(SweptAABBEx(coEventY->co));
+
+				// re-filter on X only
+				FilterCollision(coEvents, coEventX, colY_other, /*filterX=*/0, /*filterY=*/1);
+
+				if (colY_other != NULL)
+				{
+					pos.y += colY_other->t * dy + colY_other->ny * 0.4f;
+					/*object->SetPosition(pos);*/
+
+					if (isTrigger == false) object->OnCollisionEnter(this, colY_other);
+					else object->OnTriggerEnter(this, colY_other);
+				}
+				else
+				{
+					pos.y += dy;
+					/*object->SetPosition(pos);*/
+				}
+			}
+		}
+		else
+		{
+			if (coEventX != NULL)
+			{
+				if (isTrigger == false)
+				{
+					pos.x += coEventX->t * dx + coEventX->nx * 0.4f;
+					pos.y += dy;
+					object->SetPosition(pos);
+
+					if (coEventX->nx != 0) velocity.x = 0;
+					object->SetVelocity(velocity);
+				}
+
+				if (isTrigger == false) object->OnCollisionEnter(this, coEventX);
+				else object->OnTriggerEnter(this, coEventX);
+			}
+			else
+			{
+				if (coEventY != NULL)
+				{
+					if (isTrigger == false)
+					{
+						pos.x += dx;
+						pos.y += coEventY->t * dy + coEventY->ny * 0.4f;
+						object->SetPosition(pos);
+
+						if (coEventY->ny != 0) velocity.y = 0;
+						object->SetVelocity(velocity);
+					}
+
+					if (isTrigger == false) object->OnCollisionEnter(this, coEventY);
+					else object->OnTriggerEnter(this, coEventY);
+				}
+				// both colX & colY are NULL 
+				else 
+				{
+					pos.x += dx;
+					pos.y += dy;
+					/*object->SetPosition(pos);*/
+				}
+			}
 		}
 
-		if (nx != 0 || ny != 0)
-			if (isTrigger == false) object->OnCollisionEnter(this, coEventsResult);
-			else object->OnTriggerEnter(this, coEventsResult);
+		object->SetPosition(pos);
 	}
 
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];

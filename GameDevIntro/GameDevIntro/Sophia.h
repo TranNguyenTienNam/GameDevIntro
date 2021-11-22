@@ -6,16 +6,6 @@
 class ISophiaState;
 class CPlayer;
 
-enum SophiaKeySet
-{
-	MOVE_LEFT = DIK_LEFTARROW,
-	MOVE_RIGHT = DIK_RIGHTARROW,
-	UPWARD = DIK_UPARROW,
-	JUMPING = DIK_X,
-	SHOOTING = DIK_Z,
-	OPEN_CABIN = DIK_LSHIFT
-};
-
 class CSophia : public CGameObject, public CPlayer
 {
 private:
@@ -26,8 +16,6 @@ private:
 
 	DWORD lastTimeToLiftGun;
 	DWORD lastTimeToLowerGun;
-
-	/*CJason* jason;*/
 
 	// Power, Hover in class Player
 	void InitAnimation(); // If CSophia inherits from CPlayer, this is virtual function
@@ -47,6 +35,6 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 
-	void OnCollisionEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions);
-	void OnTriggerEnter(CCollider2D* selfCollider, std::vector<CCollisionEvent*> collisions);
+	void OnCollisionEnter(CCollider2D* selfCollider, CCollisionEvent* collision);
+	void OnTriggerEnter(CCollider2D* selfCollider, CCollisionEvent* collision);
 };

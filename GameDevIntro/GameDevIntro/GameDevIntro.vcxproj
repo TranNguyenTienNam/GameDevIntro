@@ -154,6 +154,7 @@
     <ClInclude Include="ClockwiseState.h" />
     <ClInclude Include="Collider2D.h" />
     <ClInclude Include="CounterclockwiseState.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Grid.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="ClockwiseState.cpp" />
     <ClCompile Include="Collider2D.cpp" />
     <ClCompile Include="CounterclockwiseState.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Grid.cpp" />
